@@ -10,14 +10,14 @@ const createHeaders = (includeAuth = true) => {
   const headers = {
     'Content-Type': 'application/json',
   };
-  
+
   if (includeAuth) {
     const token = getAuthToken();
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
   }
-  
+
   return headers;
 };
 
@@ -29,19 +29,19 @@ export const login = async (username, password) => {
       headers: createHeaders(false),
       body: JSON.stringify({ username, password }),
     });
-    
+
     if (!response.ok) {
       throw new Error('Login failed');
     }
-    
+
     const data = await response.json();
-    
+
     // Store token in localStorage
     if (data.accessToken) {
       localStorage.setItem('token', data.accessToken);
       localStorage.setItem('username', username);
     }
-    
+
     return data;
   } catch (error) {
     console.error('Login error:', error);
@@ -51,20 +51,20 @@ export const login = async (username, password) => {
 
 export const register = async (username, email, password, role) => {
   try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: createHeaders(false),
-        body: JSON.stringify({ username, email, password, role }),
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error);
-      }
-      return await response.json();
-   } catch (error) {
-      console.error('Registration error:', error);
-      throw error;
-   }
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: createHeaders(false),
+      body: JSON.stringify({ username, email, password, role }),
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  }
 };
 
 export const logout = () => {
@@ -79,11 +79,11 @@ export const getCurrentUser = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch user');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get current user error:', error);
@@ -91,7 +91,11 @@ export const getCurrentUser = async () => {
   }
 };
 
-export const updateUserPreferences = async (costPreference, dietaryRestrictions, dailyCalorieGoal = null) => {
+export const updateUserPreferences = async (
+  costPreference,
+  dietaryRestrictions,
+  dailyCalorieGoal = null
+) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/users/me/preferences`, {
       method: 'PUT',
@@ -226,11 +230,11 @@ export const getAllFoods = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch foods');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get all foods error:', error);
@@ -262,11 +266,11 @@ export const getFoodById = async (id) => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch food');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get food by id error:', error);
@@ -281,11 +285,11 @@ export const createFood = async (foodData) => {
       headers: createHeaders(true),
       body: JSON.stringify(foodData),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to create food');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Create food error:', error);
@@ -300,11 +304,11 @@ export const updateFood = async (foodData) => {
       headers: createHeaders(true),
       body: JSON.stringify(foodData),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to update food');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Update food error:', error);
@@ -318,7 +322,7 @@ export const deleteFood = async (id) => {
       method: 'DELETE',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       if (response.status === 409) {
@@ -327,7 +331,7 @@ export const deleteFood = async (id) => {
       }
       throw new Error('Failed to delete food');
     }
-    
+
     return await response.text();
   } catch (error) {
     console.error('Delete food error:', error);
@@ -342,11 +346,11 @@ export const getInventory = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch inventory');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get inventory error:', error);
@@ -361,11 +365,11 @@ export const updateInventory = async (inventoryData) => {
       headers: createHeaders(true),
       body: JSON.stringify(inventoryData),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to update inventory');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Update inventory error:', error);
@@ -380,11 +384,11 @@ export const getAllOrders = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch orders');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get all orders error:', error);
@@ -398,11 +402,11 @@ export const getMyOrders = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch my orders');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get my orders error:', error);
@@ -416,11 +420,11 @@ export const getFulfilledOrders = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch fulfilled orders');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get fulfilled orders error:', error);
@@ -434,11 +438,11 @@ export const getUnfulfilledOrders = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch unfulfilled orders');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get unfulfilled orders error:', error);
@@ -452,11 +456,11 @@ export const getOrderById = async (id) => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch order');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get order by id error:', error);
@@ -471,11 +475,11 @@ export const createOrder = async (orderData) => {
       headers: createHeaders(true),
       body: JSON.stringify(orderData),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to create order');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Create order error:', error);
@@ -490,11 +494,11 @@ export const fulfillOrder = async (orderId) => {
       headers: createHeaders(true),
       body: JSON.stringify({ id: orderId }),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fulfill order');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Fulfill order error:', error);
@@ -509,11 +513,11 @@ export const getAllUsers = async () => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch users');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get all users error:', error);
@@ -527,11 +531,11 @@ export const getUserById = async (id) => {
       method: 'GET',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch user');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Get user by id error:', error);
@@ -546,11 +550,11 @@ export const updateUserRole = async (id, role) => {
       headers: createHeaders(true),
       body: JSON.stringify({ role }),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to update user role');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Update user role error:', error);
@@ -564,11 +568,11 @@ export const deleteUser = async (id) => {
       method: 'DELETE',
       headers: createHeaders(true),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to delete user');
     }
-    
+
     // Check if response has content before parsing JSON
     const text = await response.text();
     return text ? JSON.parse(text) : { success: true };
@@ -586,11 +590,11 @@ export const sendChatMessage = async (message) => {
       headers: createHeaders(true),
       body: JSON.stringify({ message }),
     });
-    
+
     if (!response.ok) {
       throw new Error('Failed to send message to AI');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Chat error:', error);
@@ -601,17 +605,20 @@ export const sendChatMessage = async (message) => {
 export const rateFoodItem = async (orderId, foodId, rating) => {
   try {
     // Note: rating is passed as a query parameter (?rating=5.0)
-    const response = await fetch(`${API_BASE_URL}/api/foods/orders/${orderId}/${foodId}/rate?rating=${rating}`, {
-      method: 'POST',
-      headers: createHeaders(true),
-    });
-    
+    const response = await fetch(
+      `${API_BASE_URL}/api/foods/orders/${orderId}/${foodId}/rate?rating=${rating}`,
+      {
+        method: 'POST',
+        headers: createHeaders(true),
+      }
+    );
+
     if (!response.ok) {
       // We try to get the error message from the backend (e.g., "You have already rated this...")
       const errorText = await response.text();
       throw new Error(errorText || 'Failed to submit rating');
     }
-    
+
     return await response.json();
   } catch (error) {
     console.error('Rate food error:', error);
@@ -620,13 +627,16 @@ export const rateFoodItem = async (orderId, foodId, rating) => {
 };
 
 export const fetchDriverDashboard = async (user) => {
-  const response = await fetch(`${API_BASE_URL}/api/driverStats?username=${encodeURIComponent(user)}`, {
-    method: "GET",
-    headers: createHeaders(true),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/api/driverStats?username=${encodeURIComponent(user)}`,
+    {
+      method: 'GET',
+      headers: createHeaders(true),
+    }
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch driver dashboard data");
+    throw new Error('Failed to fetch driver dashboard data');
   }
 
   return await response.json();
@@ -636,31 +646,28 @@ export const acknowledgeAllergyHandoff = async (orderId) => {
   const response = await fetch(
     `${API_BASE_URL}/api/orders/${orderId}/allergy-handoff/acknowledge`,
     {
-      method: "POST",
+      method: 'POST',
       headers: createHeaders(true),
     }
   );
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(errorText || "Failed to acknowledge allergy warning");
+    throw new Error(errorText || 'Failed to acknowledge allergy warning');
   }
 
   return await response.json();
 };
 
 export const getAllergyHandoffStatus = async (orderId) => {
-  const response = await fetch(
-    `${API_BASE_URL}/api/orders/${orderId}/allergy-handoff/status`,
-    {
-      method: "GET",
-      headers: createHeaders(true),
-    }
-  );
+  const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/allergy-handoff/status`, {
+    method: 'GET',
+    headers: createHeaders(true),
+  });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(errorText || "Failed to fetch allergy handoff status");
+    throw new Error(errorText || 'Failed to fetch allergy handoff status');
   }
 
   return await response.json();
@@ -668,13 +675,13 @@ export const getAllergyHandoffStatus = async (orderId) => {
 
 export const claimOrder = async (orderId) => {
   const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/claim`, {
-    method: "POST",
+    method: 'POST',
     headers: createHeaders(true),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(errorText || "Failed to claim order");
+    throw new Error(errorText || 'Failed to claim order');
   }
 
   return await response.json();
@@ -685,7 +692,7 @@ export const updateOrderStatus = async (orderId, status, username) => {
     const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}`, {
       method: 'POST',
       headers: createHeaders(true),
-      body: JSON.stringify({username, status}),
+      body: JSON.stringify({ username, status }),
     });
 
     if (!response.ok) {

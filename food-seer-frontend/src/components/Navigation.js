@@ -65,10 +65,7 @@ const Navigation = () => {
           🍽️ FoodSeer
         </div>
 
-        <button
-          className="nav-toggle"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
+        <button className="nav-toggle" onClick={() => setMenuOpen(!menuOpen)}>
           ☰
         </button>
 
@@ -245,8 +242,8 @@ const Navigation = () => {
       </div>
       {isStandardUser && unreadNotices > 0 && location.pathname !== '/notices' && (
         <div className="trace-banner" onClick={() => navigate('/notices')}>
-          ⚠️ You have {unreadNotices} unread food safety {unreadNotices === 1 ? 'notice' : 'notices'} about your
-          orders. Tap to read.
+          ⚠️ You have {unreadNotices} unread food safety{' '}
+          {unreadNotices === 1 ? 'notice' : 'notices'} about your orders. Tap to read.
         </div>
       )}
     </nav>

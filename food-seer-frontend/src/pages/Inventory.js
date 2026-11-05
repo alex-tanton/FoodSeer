@@ -34,14 +34,14 @@ const Inventory = () => {
 
     // Apply search filter
     if (searchTerm) {
-      result = result.filter(food =>
+      result = result.filter((food) =>
         food.foodName.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Apply in-stock filter
     if (filterInStock) {
-      result = result.filter(food => food.amount > 0);
+      result = result.filter((food) => food.amount > 0);
     }
 
     // Apply sorting
@@ -84,7 +84,7 @@ const Inventory = () => {
           // For 4.5, we can just color based on threshold or show half
           // Simple solid star approach:
           const color = rating >= starValue ? '#f1c40f' : '#e0e0e0';
-          
+
           // Optional: Handle half-star visually if you want distinction
           // For now, simple filled/unfilled logic:
           return (
@@ -154,7 +154,9 @@ const Inventory = () => {
       </div>
 
       <div className="inventory-stats">
-        <p>Showing {filteredFoods.length} of {foods.length} items</p>
+        <p>
+          Showing {filteredFoods.length} of {foods.length} items
+        </p>
       </div>
 
       {filteredFoods.length === 0 ? (
@@ -173,22 +175,37 @@ const Inventory = () => {
               </div>
 
               {/* --- CORRECTED RATING DISPLAY --- */}
-              <div className="food-rating-section" style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #eee' }}>
-                 {food.rating > 0 ? (
-                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                         {renderStars(food.rating)}
-                         <span style={{ fontWeight: 'bold', color: '#333' }}>{food.rating.toFixed(1)}</span>
-                         <span style={{ fontSize: '0.85rem', color: '#7f8c8d', marginLeft: '5px' }}>({food.numberOfRatings} reviews)</span>
-                     </div>
-                 ) : (
-                     <span style={{ fontSize: '0.9rem', color: '#95a5a6', fontStyle: 'italic' }}>No ratings yet</span>
-                 )}
+              <div
+                className="food-rating-section"
+                style={{
+                  marginBottom: '10px',
+                  paddingBottom: '10px',
+                  borderBottom: '1px solid #eee',
+                }}
+              >
+                {food.rating > 0 ? (
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {renderStars(food.rating)}
+                    <span style={{ fontWeight: 'bold', color: '#333' }}>
+                      {food.rating.toFixed(1)}
+                    </span>
+                    <span style={{ fontSize: '0.85rem', color: '#7f8c8d', marginLeft: '5px' }}>
+                      ({food.numberOfRatings} reviews)
+                    </span>
+                  </div>
+                ) : (
+                  <span style={{ fontSize: '0.9rem', color: '#95a5a6', fontStyle: 'italic' }}>
+                    No ratings yet
+                  </span>
+                )}
               </div>
 
               <div className="food-info">
                 <div className="info-row">
                   <span className="info-label">Price:</span>
-                  <span className="info-value" style={{ fontWeight: 'bold', color: '#27ae60' }}>${food.price}</span>
+                  <span className="info-value" style={{ fontWeight: 'bold', color: '#27ae60' }}>
+                    ${food.price}
+                  </span>
                 </div>
                 <div className="info-row">
                   <span className="info-label">Available:</span>
@@ -197,9 +214,7 @@ const Inventory = () => {
                 {food.allergies && food.allergies.length > 0 && (
                   <div className="info-row">
                     <span className="info-label">Allergies:</span>
-                    <span className="info-value allergies">
-                      {food.allergies.join(', ')}
-                    </span>
+                    <span className="info-value allergies">{food.allergies.join(', ')}</span>
                   </div>
                 )}
               </div>

@@ -33,9 +33,7 @@ const AppLayout = ({ children }) => {
   return (
     <div className="app-layout">
       <Navigation />
-      <div className="app-content">
-        {children}
-      </div>
+      <div className="app-content">{children}</div>
     </div>
   );
 };
@@ -48,35 +46,35 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
           {/* Protected routes with navigation */}
-          <Route 
-            path="/preferences" 
+          <Route
+            path="/preferences"
             element={
               <ProtectedRoute>
                 <Preferences />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/chatbot" 
+          <Route
+            path="/chatbot"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <Chatbot />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/quiz" 
+          <Route
+            path="/quiz"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <Quiz />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
           <Route
             path="/recommendations"
@@ -119,93 +117,93 @@ function App() {
               </AdminRoute>
             }
           />
-          
-          <Route 
-            path="/inventory" 
+
+          <Route
+            path="/inventory"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <Inventory />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/create-order" 
+          <Route
+            path="/create-order"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <CreateOrder />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/orders" 
+          <Route
+            path="/orders"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <Orders />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
           {/* Admin-only Order Dashboard route */}
           <Route
-          path="/order-dashboard"
-          element={
-            <AdminRoute>
-              <AppLayout>
-                <Dashboard type="orders" />
-              </AppLayout>
-            </AdminRoute>
-          }
+            path="/order-dashboard"
+            element={
+              <AdminRoute>
+                <AppLayout>
+                  <Dashboard type="orders" />
+                </AppLayout>
+              </AdminRoute>
+            }
           />
 
           {/* Staff & Admin routes */}
-          <Route 
-            path="/order-management" 
+          <Route
+            path="/order-management"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <OrderManagement />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/inventory-management" 
+          <Route
+            path="/inventory-management"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <InventoryManagement />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
-          
+
           {/* Admin-only routes */}
-          <Route 
-            path="/users" 
+          <Route
+            path="/users"
             element={
               <ProtectedRoute>
                 <AppLayout>
                   <UserManagement />
                 </AppLayout>
               </ProtectedRoute>
-            } 
+            }
           />
 
           <Route
             path="/driver-dashboard"
             element={
               <ProtectedRoute>
-                  <AppLayout>
-                    <DriverDashboard />
-                  </AppLayout>
-                </ProtectedRoute>
-              }
-            />
+                <AppLayout>
+                  <DriverDashboard />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
 
           {/* Allergy trace-back: staff incident page and customer notices */}
           <Route

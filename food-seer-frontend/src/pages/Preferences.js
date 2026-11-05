@@ -8,7 +8,7 @@ function Preferences() {
   const [currentStep, setCurrentStep] = useState(1);
   const [quizData, setQuizData] = useState({
     budget: '',
-    dietaryRestrictions: []
+    dietaryRestrictions: [],
   });
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -20,23 +20,25 @@ function Preferences() {
       try {
         const user = await getCurrentUser();
         console.log('📥 Loading user preferences:', user);
-        
+
         if (user.costPreference || user.dietaryRestrictions) {
           // Parse existing preferences
           const existingBudget = user.costPreference || '';
           const existingDietary = user.dietaryRestrictions || '';
 
           // Parse dietary restrictions - KEEP ORIGINAL CASE (should be UPPERCASE)
-          const dietaryArray = existingDietary ? existingDietary.split(',').map(d => d.trim().toUpperCase()) : [];
+          const dietaryArray = existingDietary
+            ? existingDietary.split(',').map((d) => d.trim().toUpperCase())
+            : [];
 
           console.log('✅ Parsed preferences:', {
             budget: existingBudget,
-            dietaryRestrictions: dietaryArray
+            dietaryRestrictions: dietaryArray,
           });
 
           setQuizData({
             budget: existingBudget,
-            dietaryRestrictions: dietaryArray
+            dietaryRestrictions: dietaryArray,
           });
         }
       } catch (error) {
@@ -63,9 +65,9 @@ function Preferences() {
   };
 
   const updateQuizData = (field, value) => {
-    setQuizData(prev => ({
+    setQuizData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -79,12 +81,12 @@ function Preferences() {
       console.log('💾 Saving preferences to backend:', {
         costPreference,
         dietaryRestrictions,
-        dietaryRestrictionsArray: quizData.dietaryRestrictions
+        dietaryRestrictionsArray: quizData.dietaryRestrictions,
       });
 
       // Save preferences to backend
       await updateUserPreferences(costPreference, dietaryRestrictions);
-      
+
       console.log('✅ Preferences saved successfully!');
 
       // Navigate to recommendations
@@ -133,12 +135,7 @@ function Preferences() {
     );
   }
 
-  return (
-    <div className="App">
-      {renderCurrentStep()}
-    </div>
-  );
+  return <div className="App">{renderCurrentStep()}</div>;
 }
 
 export default Preferences;
-

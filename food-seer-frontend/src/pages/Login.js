@@ -27,18 +27,18 @@ const Login = () => {
 
     try {
       await login(username, password);
-      
+
       // Fetch user data to determine role and redirect accordingly
       const user = await getCurrentUser();
-      
+
       if (user.role === 'ROLE_ADMIN' || user.role === 'ROLE_STAFF') {
         // Admins and Staff skip customer flow, go directly to Order Management
         navigate('/order-management');
-      } else if (user.role === 'ROLE_DRIVER'){
+      } else if (user.role === 'ROLE_DRIVER') {
         navigate('/driver-dashboard');
       }
-        // Standard users go to preferences
-      else{
+      // Standard users go to preferences
+      else {
         navigate('/preferences');
       }
     } catch (err) {
@@ -55,7 +55,7 @@ const Login = () => {
           <h1 className="app-title">🍽️ FoodSeer</h1>
           <p className="app-subtitle">Find your perfect meal</p>
         </div>
-        
+
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="username">Username</label>
@@ -70,7 +70,7 @@ const Login = () => {
               autoComplete="username"
             />
           </div>
-          
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -84,19 +84,15 @@ const Login = () => {
               autoComplete="current-password"
             />
           </div>
-          
+
           {successMessage && <div className="success-message">{successMessage}</div>}
           {error && <div className="error-message">{error}</div>}
-          
-          <button 
-            type="submit" 
-            className="login-button"
-            disabled={loading}
-          >
+
+          <button type="submit" className="login-button" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        
+
         <div className="login-footer">
           <p className="demo-info">
             Demo credentials: <strong>admin</strong> / <strong>admin123</strong>
@@ -111,4 +107,3 @@ const Login = () => {
 };
 
 export default Login;
-

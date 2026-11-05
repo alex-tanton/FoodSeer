@@ -6,7 +6,7 @@ import {
   fulfillOrder,
   getCurrentUser,
   acknowledgeAllergyHandoff,
-  getAllergyHandoffStatus
+  getAllergyHandoffStatus,
 } from '../services/api';
 
 const OrderManagement = () => {
@@ -38,23 +38,20 @@ const OrderManagement = () => {
       if (user.role === 'ROLE_STAFF') {
         const statusEntries = await Promise.all(
           unfulfilled
-            .filter(order => order.allergyRestrictions?.trim())
-            .map(async order => {
+            .filter((order) => order.allergyRestrictions?.trim())
+            .map(async (order) => {
               try {
                 const status = await getAllergyHandoffStatus(order.id);
                 return [order.id, status];
               } catch (error) {
-                console.error(
-                  `Failed to load allergy status for order ${order.id}:`,
-                    error
-                );
+                console.error(`Failed to load allergy status for order ${order.id}:`, error);
                 return [order.id, null];
               }
             })
-          );
+        );
 
-          setAllergyStatus(Object.fromEntries(statusEntries));
-        }
+        setAllergyStatus(Object.fromEntries(statusEntries));
+      }
     } catch (error) {
       console.error('Error fetching orders:', error);
       navigate('/');
@@ -65,27 +62,28 @@ const OrderManagement = () => {
 
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleAcknowledgeAllergy = async (orderId) => {
-  setProcessing(prev => ({ ...prev, [orderId]: true }));
+    setProcessing((prev) => ({ ...prev, [orderId]: true }));
 
-  try {
-    await acknowledgeAllergyHandoff(orderId);
-    alert('Allergy warning acknowledged successfully!');
-    await fetchOrders();
-  } catch (error) {
-    console.error('Allergy acknowledgment failed:', error);
-    alert(error.message || 'Failed to acknowledge allergy warning.');
-  } finally {
-    setProcessing(prev => ({ ...prev, [orderId]: false }));
-  }
-};
+    try {
+      await acknowledgeAllergyHandoff(orderId);
+      alert('Allergy warning acknowledged successfully!');
+      await fetchOrders();
+    } catch (error) {
+      console.error('Allergy acknowledgment failed:', error);
+      alert(error.message || 'Failed to acknowledge allergy warning.');
+    } finally {
+      setProcessing((prev) => ({ ...prev, [orderId]: false }));
+    }
+  };
 
   const handleFulfillOrder = async (orderId) => {
     if (!window.confirm('Mark this order as fulfilled?')) return;
 
-    setProcessing(prev => ({ ...prev, [orderId]: true }));
+    setProcessing((prev) => ({ ...prev, [orderId]: true }));
 
     try {
       await fulfillOrder(orderId);
@@ -95,13 +93,18 @@ const OrderManagement = () => {
       console.error('Error fulfilling order:', error);
       alert('Failed to fulfill order. Please try again.');
     } finally {
-      setProcessing(prev => ({ ...prev, [orderId]: false }));
+      setProcessing((prev) => ({ ...prev, [orderId]: false }));
     }
   };
 
   const getTotalPrice = (order) => order.foods.reduce((total, food) => total + food.price, 0);
 
-  if (loading) return <div className="staff-dashboard-container"><div className="loading">Loading orders...</div></div>;
+  if (loading)
+    return (
+      <div className="staff-dashboard-container">
+        <div className="loading">Loading orders...</div>
+      </div>
+    );
 
   const displayOrders = view === 'unfulfilled' ? unfulfilledOrders : fulfilledOrders;
 
@@ -111,10 +114,7 @@ const OrderManagement = () => {
         <h1>📦 Order Management</h1>
         <div style={{ display: 'flex', gap: '10px' }}>
           {/* Navigate to Order Dashboard page */}
-          <button 
-            className="dashboard-button" 
-            onClick={() => navigate('/order-dashboard')}
-          >
+          <button className="dashboard-button" onClick={() => navigate('/order-dashboard')}>
             📊 Order Dashboard
           </button>
           <button className="back-button" onClick={() => navigate('/inventory-management')}>
@@ -159,8 +159,11 @@ const OrderManagement = () => {
         </div>
       ) : (
         <div className="orders-section">
-          {displayOrders.map(order => (
-            <div key={order.id} className={`order-card ${view === 'unfulfilled' ? 'pending' : 'completed'}`}>
+          {displayOrders.map((order) => (
+            <div
+              key={order.id}
+              className={`order-card ${view === 'unfulfilled' ? 'pending' : 'completed'}`}
+            >
               <div className="order-header">
                 <div className="order-title">
                   <h3>{order.name || `Order #${order.id}`}</h3>
@@ -195,8 +198,7 @@ const OrderManagement = () => {
                   <h4>Dietary Restriction Warning</h4>
 
                   <p>
-                    <strong>Customer restrictions:</strong>{' '}
-                    {order.allergyRestrictions}
+                    <strong>Customer restrictions:</strong> {order.allergyRestrictions}
                   </p>
 
                   {allergyStatus[order.id]?.staffAcknowledged ? (
@@ -204,7 +206,7 @@ const OrderManagement = () => {
                       ✓ Restaurant allergy warning acknowledged
                     </p>
                   ) : allergyStatus[order.id] === undefined ? (
-  <p>Checking acknowledgment status...</p>
+                    <p>Checking acknowledgment status...</p>
                   ) : allergyStatus[order.id] === null ? (
                     <p>Unable to verify acknowledgment status. Please refresh.</p>
                   ) : (
@@ -213,13 +215,11 @@ const OrderManagement = () => {
                       onClick={() => handleAcknowledgeAllergy(order.id)}
                       disabled={processing[order.id]}
                     >
-                      {processing[order.id]
-                        ? 'Processing...'
-                        : 'Acknowledge Allergy Warning'}
+                      {processing[order.id] ? 'Processing...' : 'Acknowledge Allergy Warning'}
                     </button>
                   )}
-                  </div>
-                )}
+                </div>
+              )}
 
               <div className="order-items-detail">
                 <h4>Order Items:</h4>
@@ -236,7 +236,11 @@ const OrderManagement = () => {
                       <tr key={`${food.id}-${index}`}>
                         <td>{food.foodName}</td>
                         <td>${food.price}</td>
-                        <td>{food.allergies && food.allergies.length > 0 ? food.allergies.join(', ') : 'None'}</td>
+                        <td>
+                          {food.allergies && food.allergies.length > 0
+                            ? food.allergies.join(', ')
+                            : 'None'}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
