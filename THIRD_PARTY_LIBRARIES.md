@@ -29,6 +29,8 @@ Every direct dependency Food Seer uses, with its license. Versions match `food-s
 | [JaCoCo Maven Plugin](https://www.jacoco.org) | 0.8.11 | EPL-2.0 | Code coverage |
 | [PIT (pitest-maven)](https://pitest.org) | 1.19.4 | Apache-2.0 | Mutation testing |
 | [pitest-junit5-plugin](https://github.com/pitest/pitest-junit5-plugin) | 1.2.3 | Apache-2.0 | PIT support for JUnit 5 |
+| [SpotBugs Maven Plugin](https://spotbugs.github.io) | 4.8.6.6 | LGPL-2.1 | Static analysis, bug pattern and dead code detection |
+| [Maven PMD Plugin](https://pmd.github.io) | 3.25.0 | BSD-style | Dead code, unused variables/imports, and duplicate detection |
 | [Apache Maven core plugins](https://maven.apache.org/plugins/) (clean, resources, compiler, surefire, jar, install, deploy, site, project-info-reports) | see `pom.xml` | Apache-2.0 | Build lifecycle |
 
 ## Frontend (JavaScript, npm)
@@ -45,6 +47,8 @@ Every direct dependency Food Seer uses, with its license. Versions match `food-s
 | [@testing-library/react](https://testing-library.com) | ^13.3.0 | MIT | Component tests |
 | [@testing-library/jest-dom](https://testing-library.com) | ^5.16.4 | MIT | DOM assertions |
 | [@testing-library/user-event](https://testing-library.com) | ^13.5.0 | MIT | Simulated user input |
+| [Prettier](https://prettier.io) | ^3.3.3 | MIT | Code formatting |
+| [depcheck](https://github.com/depcheck/depcheck) | ^1.4.7 | MIT | Dead / unused dependency checking |
 
 ## Tools and models
 
@@ -52,7 +56,6 @@ Every direct dependency Food Seer uses, with its license. Versions match `food-s
 | :- | :- | :- | :- |
 | [Ollama](https://ollama.com) | latest | MIT | Local LLM runtime for the chatbot |
 | [qwen2.5:1.5b](https://ollama.com/library/qwen2.5:1.5b) | latest | Apache-2.0 | Chatbot model |
-| [pytest](https://pytest.org) | any recent | MIT | API test suite in `proj1/tests` (the rest uses the Python standard library) |
 
 ## CI (GitHub Actions)
 

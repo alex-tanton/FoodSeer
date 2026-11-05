@@ -37,11 +37,12 @@ const openIncident = {
   remedy: null,
 };
 
-const renderPage = () => render(
-  <MemoryRouter>
-    <AllergyIncidents />
-  </MemoryRouter>
-);
+const renderPage = () =>
+  render(
+    <MemoryRouter>
+      <AllergyIncidents />
+    </MemoryRouter>
+  );
 
 describe('AllergyIncidents', () => {
   beforeEach(() => {
@@ -82,27 +83,41 @@ describe('AllergyIncidents', () => {
   });
 
   test('reports an incident and shows the counts', async () => {
-    reportRestaurantIncident.mockResolvedValue({ incidentId: 9, exposedOrderCount: 3, notifiedCount: 1 });
+    reportRestaurantIncident.mockResolvedValue({
+      incidentId: 9,
+      exposedOrderCount: 3,
+      notifiedCount: 1,
+    });
 
     renderPage();
     userEvent.type(await screen.findByPlaceholderText('For example: Peanuts'), 'Peanuts');
     userEvent.click(screen.getByLabelText('COOKIES'));
     userEvent.click(screen.getByText('Trace and warn customers'));
 
-    expect(await screen.findByText(/Incident #9 saved\. 3 orders fell in the window, and 1 customer/))
-      .toBeInTheDocument();
-    expect(reportRestaurantIncident).toHaveBeenCalledWith('Peanuts', [30], expect.any(String), expect.any(String));
+    expect(
+      await screen.findByText(/Incident #9 saved\. 3 orders fell in the window, and 1 customer/)
+    ).toBeInTheDocument();
+    expect(reportRestaurantIncident).toHaveBeenCalledWith(
+      'Peanuts',
+      [30],
+      expect.any(String),
+      expect.any(String)
+    );
   });
 
   test('shows the backend message when reporting fails', async () => {
-    reportRestaurantIncident.mockRejectedValue(new Error('The window start must not be after the window end.'));
+    reportRestaurantIncident.mockRejectedValue(
+      new Error('The window start must not be after the window end.')
+    );
 
     renderPage();
     userEvent.type(await screen.findByPlaceholderText('For example: Peanuts'), 'Peanuts');
     userEvent.click(screen.getByLabelText('COOKIES'));
     userEvent.click(screen.getByText('Trace and warn customers'));
 
-    expect(await screen.findByText('The window start must not be after the window end.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('The window start must not be after the window end.')
+    ).toBeInTheDocument();
   });
 
   test('acknowledging needs an offer, then sends it', async () => {
@@ -110,7 +125,9 @@ describe('AllergyIncidents', () => {
 
     renderPage();
     userEvent.click(await screen.findByText('Acknowledge'));
-    expect(await screen.findByText(/Please describe what the restaurant offers/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Please describe what the restaurant offers/)
+    ).toBeInTheDocument();
     expect(acknowledgeIncident).not.toHaveBeenCalled();
 
     userEvent.type(screen.getByPlaceholderText(/What do you offer/), 'Full refund');

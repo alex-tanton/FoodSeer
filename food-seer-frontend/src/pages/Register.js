@@ -8,14 +8,20 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    role: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = () => {
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword || !formData.role) {
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword ||
+      !formData.role
+    ) {
       setError('All fields are required');
       return false;
     }
@@ -42,7 +48,7 @@ const Register = () => {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     setError('');
   };
@@ -77,31 +83,69 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="username">Username</label>
-            <input id="username" name="username" type="text" className="form-input"
-              value={formData.username} onChange={handleChange} placeholder="Choose a username" autoComplete="username" />
+            <input
+              id="username"
+              name="username"
+              type="text"
+              className="form-input"
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Choose a username"
+              autoComplete="username"
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" className="form-input"
-              value={formData.email} onChange={handleChange} placeholder="Enter your email" autoComplete="email" />
+            <input
+              id="email"
+              name="email"
+              type="email"
+              className="form-input"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              autoComplete="email"
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input id="password" name="password" type="password" className="form-input"
-              value={formData.password} onChange={handleChange} placeholder="Create a password (min 6 characters)" autoComplete="new-password" />
+            <input
+              id="password"
+              name="password"
+              type="password"
+              className="form-input"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Create a password (min 6 characters)"
+              autoComplete="new-password"
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="confirmPassword">Confirm Password</label>
-            <input id="confirmPassword" name="confirmPassword" type="password" className="form-input"
-              value={formData.confirmPassword} onChange={handleChange} placeholder="Re-enter your password" autoComplete="new-password" />
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              className="form-input"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Re-enter your password"
+              autoComplete="new-password"
+            />
           </div>
 
           <div className="form-group">
             <label htmlFor="role">Role</label>
-            <select id="role" name="role" className="form-input" value={formData.role} onChange={handleChange}>
+            <select
+              id="role"
+              name="role"
+              className="form-input"
+              value={formData.role}
+              onChange={handleChange}
+            >
               <option value="">Select role</option>
               <option value="staff">Staff</option>
               <option value="customer">Customer</option>

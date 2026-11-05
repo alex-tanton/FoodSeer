@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { getAllergens } from '../services/api';
 
-const DietaryRestrictions = ({ restrictions, onUpdate, onNext, onPrevious, canGoNext, isLastStep }) => {
+const DietaryRestrictions = ({
+  restrictions,
+  onUpdate,
+  onNext,
+  onPrevious,
+  canGoNext,
+  isLastStep,
+}) => {
   const [selectedRestrictions, setSelectedRestrictions] = useState(restrictions);
   // Shared, site-wide allergen list (same source Personal Diet reads from and
   // adds to) - starts empty and loads below, rather than a fixed hardcoded set.
@@ -17,8 +24,9 @@ const DietaryRestrictions = ({ restrictions, onUpdate, onNext, onPrevious, canGo
   useEffect(() => {
     console.log('🎯 DietaryRestrictions component mounted with:', {
       restrictions,
-      selectedRestrictions
+      selectedRestrictions,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -31,12 +39,12 @@ const DietaryRestrictions = ({ restrictions, onUpdate, onNext, onPrevious, canGo
     let newRestrictions;
     if (selectedRestrictions.includes(value)) {
       console.log(`➖ Removing restriction: ${value}`);
-      newRestrictions = selectedRestrictions.filter(r => r !== value);
+      newRestrictions = selectedRestrictions.filter((r) => r !== value);
     } else {
       console.log(`➕ Adding restriction: ${value}`);
       newRestrictions = [...selectedRestrictions, value];
     }
-    
+
     console.log('📝 Updated dietary restrictions:', newRestrictions);
     setSelectedRestrictions(newRestrictions);
     onUpdate('dietaryRestrictions', newRestrictions);
@@ -53,21 +61,22 @@ const DietaryRestrictions = ({ restrictions, onUpdate, onNext, onPrevious, canGo
       <div className="icon-container">
         <div className="icon-carrot">🥕</div>
       </div>
-      
+
       <h1 className="question-title">Do you have any allergies or dietary restrictions?</h1>
       <p className="question-subtitle">Select all that apply, or skip to see all options</p>
-      
+
       <div className="allergens-scroll-container">
         <div className="allergens-selection-grid">
           {allergenOptions.map((option) => {
             const value = typeof option === 'string' ? option : option.value;
-            const label = value === 'MILK'
-              ? 'Milk/Dairy'
-              : value === 'MEAT'
-                ? 'Meat (All)'
-                : value === 'TREE-NUTS'
-                  ? 'Tree Nuts'
-                  : value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+            const label =
+              value === 'MILK'
+                ? 'Milk/Dairy'
+                : value === 'MEAT'
+                  ? 'Meat (All)'
+                  : value === 'TREE-NUTS'
+                    ? 'Tree Nuts'
+                    : value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 
             return (
               <label
@@ -78,30 +87,27 @@ const DietaryRestrictions = ({ restrictions, onUpdate, onNext, onPrevious, canGo
                   type="checkbox"
                   checked={selectedRestrictions.includes(value)}
                   onChange={() => handleRestrictionChange(value)}
-              />
-              <span>{label}</span>
-            </label>
-          );
-        })}
+                />
+                <span>{label}</span>
+              </label>
+            );
+          })}
         </div>
       </div>
 
       {selectedRestrictions.length > 0 && (
         <div className="selected-restrictions-summary">
-          <strong>Selected ({selectedRestrictions.length}):</strong> {selectedRestrictions.join(', ')}
+          <strong>Selected ({selectedRestrictions.length}):</strong>{' '}
+          {selectedRestrictions.join(', ')}
         </div>
       )}
-      
+
       <div className="navigation">
         <button className="previous-button" onClick={onPrevious}>
           <span className="previous-icon">←</span>
           Previous
         </button>
-        <button
-          className="next-button"
-          onClick={handleNext}
-          disabled={!canGoNext}
-        >
+        <button className="next-button" onClick={handleNext} disabled={!canGoNext}>
           {isLastStep ? 'Finish' : 'Next'}
           <span className="next-icon">{isLastStep ? '✓' : '→'}</span>
         </button>

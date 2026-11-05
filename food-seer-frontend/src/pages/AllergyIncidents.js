@@ -7,7 +7,11 @@ import {
   reportRestaurantIncident,
   acknowledgeIncident,
 } from '../services/api';
-import { ALLERGEN_SUGGESTIONS, formatDateTime, toDateTimeInputValue } from '../components/allergyOptions';
+import {
+  ALLERGEN_SUGGESTIONS,
+  formatDateTime,
+  toDateTimeInputValue,
+} from '../components/allergyOptions';
 
 // Staff and admin page: report a possible cross-contact incident, then see
 // every incident and attach what the restaurant offers affected customers.
@@ -98,12 +102,17 @@ const AllergyIncidents = () => {
 
     setSubmitting(true);
     try {
-      const result = await reportRestaurantIncident(allergen.trim(), selectedFoodIds, windowStart, windowEnd);
+      const result = await reportRestaurantIncident(
+        allergen.trim(),
+        selectedFoodIds,
+        windowStart,
+        windowEnd
+      );
       const customerWord = result.notifiedCount === 1 ? 'customer' : 'customers';
       const orderWord = result.exposedOrderCount === 1 ? 'order' : 'orders';
       setFormSuccess(
-        `Incident #${result.incidentId} saved. ${result.exposedOrderCount} ${orderWord} fell in the window, and `
-          + `${result.notifiedCount} ${customerWord} with this allergy were warned privately.`
+        `Incident #${result.incidentId} saved. ${result.exposedOrderCount} ${orderWord} fell in the window, and ` +
+          `${result.notifiedCount} ${customerWord} with this allergy were warned privately.`
       );
       setAllergen('');
       setSelectedFoodIds([]);
@@ -118,7 +127,9 @@ const AllergyIncidents = () => {
   const handleAcknowledge = async (incidentId) => {
     const remedy = remedyDrafts[incidentId] || '';
     if (remedy.trim() === '') {
-      setListError('Please describe what the restaurant offers, for example a refund or a free remake.');
+      setListError(
+        'Please describe what the restaurant offers, for example a refund or a free remake.'
+      );
       return;
     }
     setAcknowledging({ ...acknowledging, [incidentId]: true });
@@ -150,8 +161,8 @@ const AllergyIncidents = () => {
       <form className="trace-card trace-form" onSubmit={handleReport}>
         <h2>Report a possible cross-contact</h2>
         <p className="trace-muted">
-          Customers who ordered these dishes in this window and have this allergy saved get a private notice.
-          Nobody is told who else was affected.
+          Customers who ordered these dishes in this window and have this allergy saved get a
+          private notice. Nobody is told who else was affected.
         </p>
 
         <label className="trace-field">
@@ -174,7 +185,10 @@ const AllergyIncidents = () => {
           <span>Dishes that may carry it</span>
           <div className="trace-dish-grid">
             {foods.map((food) => (
-              <label key={food.id} className={`trace-dish ${selectedFoodIds.includes(food.id) ? 'selected' : ''}`}>
+              <label
+                key={food.id}
+                className={`trace-dish ${selectedFoodIds.includes(food.id) ? 'selected' : ''}`}
+              >
                 <input
                   type="checkbox"
                   checked={selectedFoodIds.includes(food.id)}
@@ -189,11 +203,19 @@ const AllergyIncidents = () => {
         <div className="trace-window">
           <label className="trace-field">
             <span>Window start</span>
-            <input type="datetime-local" value={windowStart} onChange={(event) => setWindowStart(event.target.value)} />
+            <input
+              type="datetime-local"
+              value={windowStart}
+              onChange={(event) => setWindowStart(event.target.value)}
+            />
           </label>
           <label className="trace-field">
             <span>Window end</span>
-            <input type="datetime-local" value={windowEnd} onChange={(event) => setWindowEnd(event.target.value)} />
+            <input
+              type="datetime-local"
+              value={windowEnd}
+              onChange={(event) => setWindowEnd(event.target.value)}
+            />
           </label>
         </div>
 
@@ -220,7 +242,9 @@ const AllergyIncidents = () => {
                 <h3>
                   Incident #{incident.id}: {incident.allergen}
                 </h3>
-                <span className={`status-badge ${incident.restaurantAcknowledgedAt ? 'fulfilled' : 'pending'}`}>
+                <span
+                  className={`status-badge ${incident.restaurantAcknowledgedAt ? 'fulfilled' : 'pending'}`}
+                >
                   {incident.restaurantAcknowledgedAt ? '✓ Acknowledged' : '⏳ Needs a response'}
                 </span>
               </div>
@@ -236,7 +260,8 @@ const AllergyIncidents = () => {
                 <strong>Suspect dishes:</strong> {incident.suspectFoodNames.join(', ')}
               </p>
               <p>
-                <strong>Window:</strong> {formatDateTime(incident.windowStart)} to {formatDateTime(incident.windowEnd)}
+                <strong>Window:</strong> {formatDateTime(incident.windowStart)} to{' '}
+                {formatDateTime(incident.windowEnd)}
               </p>
               <p>
                 <strong>Orders in the window:</strong> {incident.exposedOrderCount ?? 0} ·{' '}
@@ -247,7 +272,8 @@ const AllergyIncidents = () => {
                 <div className="trace-remedy">
                   <strong>Our offer to affected customers:</strong> {incident.remedy}
                   <div className="trace-muted">
-                    Acknowledged by {incident.acknowledgedBy} at {formatDateTime(incident.restaurantAcknowledgedAt)}
+                    Acknowledged by {incident.acknowledgedBy} at{' '}
+                    {formatDateTime(incident.restaurantAcknowledgedAt)}
                   </div>
                 </div>
               )}
@@ -256,8 +282,14 @@ const AllergyIncidents = () => {
                 <input
                   type="text"
                   value={remedyDrafts[incident.id] || ''}
-                  onChange={(event) => setRemedyDrafts({ ...remedyDrafts, [incident.id]: event.target.value })}
-                  placeholder={incident.remedy ? 'Update the offer' : 'What do you offer? For example: Full refund or a free remake'}
+                  onChange={(event) =>
+                    setRemedyDrafts({ ...remedyDrafts, [incident.id]: event.target.value })
+                  }
+                  placeholder={
+                    incident.remedy
+                      ? 'Update the offer'
+                      : 'What do you offer? For example: Full refund or a free remake'
+                  }
                   maxLength={500}
                 />
                 <button

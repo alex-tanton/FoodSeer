@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllFoods, createFood, updateFood, deleteFood, getCurrentUser, getAllergens } from '../services/api';
+import {
+  getAllFoods,
+  createFood,
+  updateFood,
+  deleteFood,
+  getCurrentUser,
+  getAllergens,
+} from '../services/api';
 
 const InventoryManagement = () => {
   const [foods, setFoods] = useState([]);
@@ -16,7 +23,7 @@ const InventoryManagement = () => {
     amount: 0,
     price: 0,
     calories: '',
-    allergies: []
+    allergies: [],
   });
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
@@ -45,6 +52,7 @@ const InventoryManagement = () => {
 
   useEffect(() => {
     fetchFoods();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -55,9 +63,9 @@ const InventoryManagement = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -67,24 +75,24 @@ const InventoryManagement = () => {
       amount: 0,
       price: 0,
       calories: '',
-      allergies: []
+      allergies: [],
     });
     setEditingFood(null);
     setShowAddForm(false);
   };
 
   const handleAllergyToggle = (allergen) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       allergies: prev.allergies.includes(allergen)
-        ? prev.allergies.filter(a => a !== allergen)
-        : [...prev.allergies, allergen]
+        ? prev.allergies.filter((a) => a !== allergen)
+        : [...prev.allergies, allergen],
     }));
   };
 
   const handleAddFood = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.foodName.trim()) {
       alert('Food name is required');
       return;
@@ -96,7 +104,7 @@ const InventoryManagement = () => {
         amount: parseInt(formData.amount),
         price: parseInt(formData.price),
         calories: formData.calories === '' ? null : parseInt(formData.calories),
-        allergies: formData.allergies
+        allergies: formData.allergies,
       };
 
       await createFood(foodData);
@@ -116,7 +124,7 @@ const InventoryManagement = () => {
       amount: food.amount,
       price: food.price,
       calories: food.calories != null ? String(food.calories) : '',
-      allergies: food.allergies || []
+      allergies: food.allergies || [],
     });
     setShowAddForm(true);
   };
@@ -135,7 +143,7 @@ const InventoryManagement = () => {
         amount: parseInt(formData.amount),
         price: parseInt(formData.price),
         calories: formData.calories === '' ? null : parseInt(formData.calories),
-        allergies: formData.allergies
+        allergies: formData.allergies,
       };
 
       await updateFood(foodData);
@@ -212,11 +220,11 @@ const InventoryManagement = () => {
         </div>
         <div className="stat-card">
           <h3>In Stock</h3>
-          <p className="stat-number">{foods.filter(f => f.amount > 0).length}</p>
+          <p className="stat-number">{foods.filter((f) => f.amount > 0).length}</p>
         </div>
         <div className="stat-card">
           <h3>Out of Stock</h3>
-          <p className="stat-number">{foods.filter(f => f.amount === 0).length}</p>
+          <p className="stat-number">{foods.filter((f) => f.amount === 0).length}</p>
         </div>
       </div>
 
@@ -283,7 +291,7 @@ const InventoryManagement = () => {
             <div className="form-group">
               <label>Allergens (select all that apply)</label>
               <div className="allergens-grid">
-                {allergenOptions.map(allergen => (
+                {allergenOptions.map((allergen) => (
                   <label key={allergen} className="allergen-checkbox">
                     <input
                       type="checkbox"
@@ -295,9 +303,7 @@ const InventoryManagement = () => {
                 ))}
               </div>
               {formData.allergies.length > 0 && (
-                <div className="selected-allergies">
-                  Selected: {formData.allergies.join(', ')}
-                </div>
+                <div className="selected-allergies">Selected: {formData.allergies.join(', ')}</div>
               )}
             </div>
 
@@ -332,7 +338,7 @@ const InventoryManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {foods.map(food => (
+              {foods.map((food) => (
                 <tr key={food.id}>
                   <td>{food.id}</td>
                   <td>{food.foodName}</td>
@@ -345,22 +351,23 @@ const InventoryManagement = () => {
                   </td>
                   <td>
                     {food.rating > 0 ? (
-                        <span style={{ whiteSpace: 'nowrap' }}>
-                            <span style={{ color: '#f1c40f' }}>⭐</span> {food.rating.toFixed(1)} 
-                            <span style={{ fontSize: '0.85em', color: '#777', marginLeft: '4px' }}>
-                                ({food.numberOfRatings})
-                            </span>
+                      <span style={{ whiteSpace: 'nowrap' }}>
+                        <span style={{ color: '#f1c40f' }}>⭐</span> {food.rating.toFixed(1)}
+                        <span style={{ fontSize: '0.85em', color: '#777', marginLeft: '4px' }}>
+                          ({food.numberOfRatings})
                         </span>
+                      </span>
                     ) : (
-                        <span style={{ color: '#ccc', fontStyle: 'italic' }}>No ratings</span>
+                      <span style={{ color: '#ccc', fontStyle: 'italic' }}>No ratings</span>
                     )}
                   </td>
-                  <td>{food.allergies && food.allergies.length > 0 ? food.allergies.join(', ') : 'None'}</td>
+                  <td>
+                    {food.allergies && food.allergies.length > 0
+                      ? food.allergies.join(', ')
+                      : 'None'}
+                  </td>
                   <td className="actions-cell">
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEditFood(food)}
-                    >
+                    <button className="edit-button" onClick={() => handleEditFood(food)}>
                       Edit
                     </button>
                     <button

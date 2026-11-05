@@ -65,7 +65,10 @@ const SafetyNotices = () => {
       ) : (
         <div className="orders-list">
           {notices.map((notice) => (
-            <div key={notice.id} className={`trace-card ${notice.acknowledged ? '' : 'trace-unread'}`}>
+            <div
+              key={notice.id}
+              className={`trace-card ${notice.acknowledged ? '' : 'trace-unread'}`}
+            >
               <div className="order-header">
                 <h3>Order #{notice.orderId}</h3>
                 <span className={`status-badge ${notice.acknowledged ? 'fulfilled' : 'pending'}`}>
@@ -78,7 +81,9 @@ const SafetyNotices = () => {
                   <strong>The restaurant offers:</strong> {notice.remedy}
                 </div>
               ) : (
-                <p className="trace-muted">The restaurant has been told and will follow up with an offer.</p>
+                <p className="trace-muted">
+                  The restaurant has been told and will follow up with an offer.
+                </p>
               )}
               <p className="trace-muted">Sent {formatDateTime(notice.createdAt)}</p>
               {!notice.acknowledged && (
