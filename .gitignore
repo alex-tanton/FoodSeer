@@ -1,34 +1,79 @@
-# Ignore application.properties and other sensitive config
+# Secrets & Environment Configurations
 **/application.properties
+**/.env
+**/.env.*
+**/.env.local
 
-# Node modules
+# Node & Package Managers
+node_modules/
 **/node_modules/
-**/package-lock.json
+/package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
 
-# Build outputs
+# Build Outputs & Distributions
 **/target/
 **/build/
 **/dist/
+**/out/
+dependency-reduced-pom.xml
 
-# IDE files
-**/.vscode/
+# Code Quality, Reports & Test Coverage
+**/coverage/
+**/.nyc_output/
+**/jacoco.exec
+**/jacoco.xml
+**/target/site/jacoco/
+**/target/spotbugs/
+**/spotbugsXml.xml
+**/target/pmd/
+**/pmd.xml
+**/cpd.xml
+**/pit-reports/
+
+# Database artifacts (H2 local / embedded)
+*.mv.db
+*.trace.db
+
+# IDE & Editor Specific Files
+# IntelliJ IDEA
 **/.idea/
 **/*.iml
+**/*.iws
+**/*.ipr
 
-# OS files
+# Eclipse
+**/.project
+**/.classpath
+**/.settings/
+
+# Visual Studio Code
+**/.vscode/
+!**/.vscode/extensions.json
+!**/.vscode/settings.json
+
+# Operating System Files
 **/.DS_Store
-proj1/test-output/
-proj1/.venv/
-proj1/tests/.pytest_cache/
-proj1/tests/__pycache__/
+**/Thumbs.db
+**/ehthumbs.db
+**/desktop.ini
 
-# Logs and process ids from local test runs
+# Python / Test runner artifacts
+**/.pytest_cache/
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/test-output/
+
+# Logs & Temporary Files
 *.log
 *.pid
-
-# Local secrets (never commit keys or passwords)
-**/.env
-**/.env.*
-
-# Frontend test coverage output
-**/coverage/
+*.hprof
+hs_err_pid*
+*~
+*.swp
+*.swo
+*.tmp
+*.bak

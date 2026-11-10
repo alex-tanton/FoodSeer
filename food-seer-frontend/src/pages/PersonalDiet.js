@@ -9,13 +9,13 @@ import {
   logMeal,
   getAllergens,
   addAllergen,
-  createOrder
+  createOrder,
 } from '../services/api';
 
 const MEAL_TYPES = [
   { value: 'BREAKFAST', label: 'Breakfast' },
   { value: 'LUNCH', label: 'Lunch' },
-  { value: 'DINNER', label: 'Dinner' }
+  { value: 'DINNER', label: 'Dinner' },
 ];
 
 // Fully optional feature: a customer who never visits this page or never
@@ -52,7 +52,7 @@ const PersonalDiet = () => {
         getCurrentUser(),
         getCalorieBudget(),
         getFoodsWithinCalorieBudget(),
-        getAllergens()
+        getAllergens(),
       ]);
       setUser(userData);
       setBudget(budgetData);
@@ -61,7 +61,10 @@ const PersonalDiet = () => {
       setAllergenOptions(allergenList);
       // Parse the existing comma-separated dietaryRestrictions string into an array for the checkboxes below.
       const existingAllergies = userData.dietaryRestrictions
-        ? userData.dietaryRestrictions.split(',').map((a) => a.trim().toUpperCase()).filter((a) => a.length > 0)
+        ? userData.dietaryRestrictions
+            .split(',')
+            .map((a) => a.trim().toUpperCase())
+            .filter((a) => a.length > 0)
         : [];
       setAllergyInput(existingAllergies);
     } catch (error) {
@@ -176,21 +179,23 @@ const PersonalDiet = () => {
     if (!food.allergies || food.allergies.length === 0) return true;
     const foodAllergies = food.allergies.map((a) => a.toLowerCase());
     const userRestrictions = allergyInput.map((a) => a.toLowerCase());
-    return !userRestrictions.some((restriction) => foodAllergies.some((allergy) => allergy === restriction));
+    return !userRestrictions.some((restriction) =>
+      foodAllergies.some((allergy) => allergy === restriction)
+    );
   });
   const excludedForAllergies = (recommendation?.foods?.length || 0) - allergyFreeFoods.length;
 
   const handleAddToCart = (food) => {
     setCart((prev) => ({
       ...prev,
-      [food.id]: { food, quantity: (prev[food.id]?.quantity || 0) + 1 }
+      [food.id]: { food, quantity: (prev[food.id]?.quantity || 0) + 1 },
     }));
   };
 
   const handleIncrementCartItem = (food) => {
     setCart((prev) => ({
       ...prev,
-      [food.id]: { food, quantity: (prev[food.id]?.quantity || 0) + 1 }
+      [food.id]: { food, quantity: (prev[food.id]?.quantity || 0) + 1 },
     }));
   };
 
@@ -216,14 +221,18 @@ const PersonalDiet = () => {
 
   const getCartDeliveryCost = () => parseFloat((0.3 * getCartItemsTotal()).toFixed(2));
 
-  const getCartTotalPrice = () => parseFloat((getCartItemsTotal() + getCartDeliveryCost()).toFixed(2));
+  const getCartTotalPrice = () =>
+    parseFloat((getCartItemsTotal() + getCartDeliveryCost()).toFixed(2));
 
   // Each food card is already filtered to fit the remaining budget on its
   // own, but several of those individually-fitting items can still add up
   // to more than the remaining budget once combined in one cart - this
   // checks the cart's running total against it.
   const getCartTotalCalories = () =>
-    Object.values(cart).reduce((total, item) => total + (item.food.calories || 0) * item.quantity, 0);
+    Object.values(cart).reduce(
+      (total, item) => total + (item.food.calories || 0) * item.quantity,
+      0
+    );
 
   const cartOverCalorieBudget =
     budget?.remainingCalories != null && getCartTotalCalories() > budget.remainingCalories;
@@ -248,7 +257,7 @@ const PersonalDiet = () => {
         isFulfilled: false,
         cost: getCartTotalPrice(),
         status: 'Placed',
-        deliveryCost: getCartDeliveryCost()
+        deliveryCost: getCartDeliveryCost(),
       };
       await createOrder(orderData);
       alert('Order placed successfully!');
@@ -293,7 +302,11 @@ const PersonalDiet = () => {
           {cartItemCount > 0 && (
             <button
               className="nav-button"
-              onClick={() => document.getElementById('personal-diet-cart')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() =>
+                document
+                  .getElementById('personal-diet-cart')
+                  ?.scrollIntoView({ behavior: 'smooth' })
+              }
             >
               View Cart ({cartItemCount})
             </button>
@@ -307,9 +320,13 @@ const PersonalDiet = () => {
       <div className="user-info-card">
         <h2>Set your daily calorie goal</h2>
         <p style={{ color: '#666', marginBottom: '16px' }}>
-          Optional - used alongside your fitness activity to recommend menu items that fit your remaining budget for today. Leave blank to turn this off.
+          Optional - used alongside your fitness activity to recommend menu items that fit your
+          remaining budget for today. Leave blank to turn this off.
         </p>
-        <form onSubmit={handleSaveGoal} style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <form
+          onSubmit={handleSaveGoal}
+          style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}
+        >
           <input
             type="number"
             min="0"
@@ -343,8 +360,8 @@ const PersonalDiet = () => {
               {!budget?.goalSet
                 ? 'No daily goal set'
                 : !budget?.fitnessDataTracked
-                ? 'Fitness activity not tracked'
-                : `${budget.remainingCalories} cal`}
+                  ? 'Fitness activity not tracked'
+                  : `${budget.remainingCalories} cal`}
             </span>
           </div>
         </div>
@@ -353,9 +370,14 @@ const PersonalDiet = () => {
       <div className="user-info-card">
         <h2>Log a meal</h2>
         <p style={{ color: '#666', marginBottom: '16px' }}>
-          Log what you've eaten today, even if it wasn't ordered through FoodSeer. The first meal you log gets your full budget; each meal logged after that is reduced by what you've already logged.
+          Log what you've eaten today, even if it wasn't ordered through FoodSeer. The first meal
+          you log gets your full budget; each meal logged after that is reduced by what you've
+          already logged.
         </p>
-        <form onSubmit={handleLogMeal} style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <form
+          onSubmit={handleLogMeal}
+          style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}
+        >
           <select
             value={mealType}
             onChange={(e) => setMealType(e.target.value)}
@@ -363,7 +385,9 @@ const PersonalDiet = () => {
             style={{ maxWidth: '160px' }}
           >
             {MEAL_TYPES.map((m) => (
-              <option key={m.value} value={m.value}>{m.label}</option>
+              <option key={m.value} value={m.value}>
+                {m.label}
+              </option>
             ))}
           </select>
           <input
@@ -398,7 +422,8 @@ const PersonalDiet = () => {
       <div className="user-info-card">
         <h2>Your allergies</h2>
         <p style={{ color: '#666', marginBottom: '16px' }}>
-          Select anything you're allergic to. Menu items below are filtered to exclude these, on top of your calorie budget.
+          Select anything you're allergic to. Menu items below are filtered to exclude these, on top
+          of your calorie budget.
         </p>
         <form onSubmit={handleSaveAllergies}>
           <div className="allergens-grid">
@@ -435,7 +460,11 @@ const PersonalDiet = () => {
               className="form-input"
               style={{ maxWidth: '220px' }}
             />
-            <button type="button" className="update-preferences-button" onClick={handleAddCustomAllergy}>
+            <button
+              type="button"
+              className="update-preferences-button"
+              onClick={handleAddCustomAllergy}
+            >
               Add
             </button>
           </div>
@@ -453,7 +482,7 @@ const PersonalDiet = () => {
                     fontSize: '0.9em',
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '6px'
+                    gap: '6px',
                   }}
                 >
                   {allergen}
@@ -461,7 +490,13 @@ const PersonalDiet = () => {
                     type="button"
                     onClick={() => handleRemoveAllergy(allergen)}
                     aria-label={`Remove ${allergen}`}
-                    style={{ background: 'none', border: 'none', color: '#c0392b', cursor: 'pointer', fontWeight: 'bold' }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#c0392b',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                    }}
                   >
                     ✕
                   </button>
@@ -475,7 +510,12 @@ const PersonalDiet = () => {
               <strong>Selected:</strong> {allergyInput.join(', ')}
             </div>
           )}
-          <button type="submit" className="update-preferences-button" style={{ marginTop: '16px' }} disabled={savingAllergies}>
+          <button
+            type="submit"
+            className="update-preferences-button"
+            style={{ marginTop: '16px' }}
+            disabled={savingAllergies}
+          >
             {savingAllergies ? 'Saving...' : 'Save Allergies'}
           </button>
         </form>
@@ -484,7 +524,9 @@ const PersonalDiet = () => {
       <div className="user-info-card" id="personal-diet-cart">
         <h2>Your Cart</h2>
         {cartItemCount === 0 ? (
-          <p style={{ color: '#666' }}>Your cart is empty. Click "Add to Cart" on any item below.</p>
+          <p style={{ color: '#666' }}>
+            Your cart is empty. Click "Add to Cart" on any item below.
+          </p>
         ) : (
           <>
             <div style={{ marginBottom: '16px' }}>
@@ -496,13 +538,14 @@ const PersonalDiet = () => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     padding: '10px 0',
-                    borderBottom: '1px solid #eee'
+                    borderBottom: '1px solid #eee',
                   }}
                 >
                   <div style={{ textAlign: 'left' }}>
                     <strong>{item.food.foodName}</strong>
                     <div style={{ color: '#666', fontSize: '0.9em' }}>
-                      ${item.food.price} × {item.quantity} = ${(item.food.price * item.quantity).toFixed(2)}
+                      ${item.food.price} × {item.quantity} = $
+                      {(item.food.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -536,15 +579,24 @@ const PersonalDiet = () => {
                   borderRadius: '8px',
                   padding: '12px 16px',
                   marginBottom: '16px',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
                 }}
               >
-                ⚠️ This cart is {getCartTotalCalories() - budget.remainingCalories} calories over your remaining budget
-                ({getCartTotalCalories()} cal in cart vs. {budget.remainingCalories} cal remaining).
+                ⚠️ This cart is {getCartTotalCalories() - budget.remainingCalories} calories over
+                your remaining budget ({getCartTotalCalories()} cal in cart vs.{' '}
+                {budget.remainingCalories} cal remaining).
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '16px' }}>
+            <div
+              style={{
+                display: 'flex',
+                gap: '10px',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                marginBottom: '16px',
+              }}
+            >
               <input
                 type="text"
                 placeholder="Order name, e.g. Lunch Order"
@@ -562,7 +614,10 @@ const PersonalDiet = () => {
               </div>
               <div className="preference-item">
                 <span className="preference-label">Total Calories:</span>
-                <span className="preference-value" style={{ color: cartOverCalorieBudget ? '#c0392b' : undefined }}>
+                <span
+                  className="preference-value"
+                  style={{ color: cartOverCalorieBudget ? '#c0392b' : undefined }}
+                >
                   {getCartTotalCalories()} cal
                   {budget?.remainingCalories != null && ` / ${budget.remainingCalories} cal budget`}
                 </span>
@@ -578,7 +633,12 @@ const PersonalDiet = () => {
             </div>
 
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-              <button type="button" className="cancel-button" onClick={handleClearCart} disabled={placingOrder}>
+              <button
+                type="button"
+                className="cancel-button"
+                onClick={handleClearCart}
+                disabled={placingOrder}
+              >
                 Clear Cart
               </button>
               <button
@@ -603,18 +663,24 @@ const PersonalDiet = () => {
         <h2>Menu Items That Fit Your Budget and Allergies</h2>
         {!recommendation?.budgetApplied && (
           <div className="no-recommendations">
-            <p>Set a daily calorie goal above to see menu items filtered to your remaining budget.</p>
-            <p>Until then, this page won't affect anything else in FoodSeer - it's entirely optional.</p>
+            <p>
+              Set a daily calorie goal above to see menu items filtered to your remaining budget.
+            </p>
+            <p>
+              Until then, this page won't affect anything else in FoodSeer - it's entirely optional.
+            </p>
           </div>
         )}
         {recommendation?.budgetApplied && recommendation.excludedForMissingCalories > 0 && (
           <p className="no-recommendations">
-            {recommendation.excludedForMissingCalories} menu item(s) have no recorded calorie value and are excluded from this list.
+            {recommendation.excludedForMissingCalories} menu item(s) have no recorded calorie value
+            and are excluded from this list.
           </p>
         )}
         {excludedForAllergies > 0 && (
           <p className="no-recommendations">
-            {excludedForAllergies} menu item(s) are excluded for matching one of your selected allergies.
+            {excludedForAllergies} menu item(s) are excluded for matching one of your selected
+            allergies.
           </p>
         )}
         {recommendation?.budgetApplied && allergyFreeFoods.length === 0 && (
@@ -631,15 +697,25 @@ const PersonalDiet = () => {
                 onClick={() => {
                   if (food.amount > 0) handleAddToCart(food);
                 }}
-                style={{ cursor: food.amount > 0 ? 'pointer' : 'not-allowed', opacity: food.amount > 0 ? 1 : 0.6 }}
+                style={{
+                  cursor: food.amount > 0 ? 'pointer' : 'not-allowed',
+                  opacity: food.amount > 0 ? 1 : 0.6,
+                }}
                 title={food.amount > 0 ? 'Click to add to cart' : 'Out of stock'}
               >
                 <div className="recommendation-icon">🍽️</div>
                 <h3>{food.foodName}</h3>
                 <div className="food-details">
-                  <p><strong>Calories:</strong> {food.calories}</p>
-                  <p><strong>Price:</strong> ${food.price}</p>
-                  <p><strong>Available:</strong> {food.amount > 0 ? `${food.amount} units` : 'Out of stock'}</p>
+                  <p>
+                    <strong>Calories:</strong> {food.calories}
+                  </p>
+                  <p>
+                    <strong>Price:</strong> ${food.price}
+                  </p>
+                  <p>
+                    <strong>Available:</strong>{' '}
+                    {food.amount > 0 ? `${food.amount} units` : 'Out of stock'}
+                  </p>
                 </div>
                 <div className="recommendation-match">
                   {food.amount > 0 ? '✓ Available' : '✗ Out of Stock'}

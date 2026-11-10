@@ -23,8 +23,8 @@ const Quiz = () => {
         { value: 'beverage', label: '☕ Beverage' },
         { value: 'sweet', label: '🍰 Sweet/Dessert' },
         { value: 'savory', label: '🍔 Savory/Meal' },
-        { value: 'snack', label: '🥨 Snack' }
-      ]
+        { value: 'snack', label: '🥨 Snack' },
+      ],
     },
     {
       id: 'filling',
@@ -32,8 +32,8 @@ const Quiz = () => {
       options: [
         { value: 'light', label: 'Light/Small' },
         { value: 'medium', label: 'Medium' },
-        { value: 'heavy', label: 'Heavy/Full Meal' }
-      ]
+        { value: 'heavy', label: 'Heavy/Full Meal' },
+      ],
     },
     {
       id: 'temperature',
@@ -41,8 +41,8 @@ const Quiz = () => {
       options: [
         { value: 'hot', label: '🔥 Hot' },
         { value: 'cold', label: '❄️ Cold' },
-        { value: 'room', label: '🌡️ Room Temperature' }
-      ]
+        { value: 'room', label: '🌡️ Room Temperature' },
+      ],
     },
     {
       id: 'timeOfDay',
@@ -51,8 +51,8 @@ const Quiz = () => {
         { value: 'breakfast', label: '🌅 Breakfast' },
         { value: 'lunch', label: '☀️ Lunch' },
         { value: 'dinner', label: '🌙 Dinner' },
-        { value: 'anytime', label: '⏰ Anytime/Snack' }
-      ]
+        { value: 'anytime', label: '⏰ Anytime/Snack' },
+      ],
     },
     {
       id: 'flavor',
@@ -61,15 +61,15 @@ const Quiz = () => {
         { value: 'rich', label: 'Rich/Indulgent' },
         { value: 'fresh', label: 'Fresh/Light' },
         { value: 'savory', label: 'Savory/Umami' },
-        { value: 'sweet', label: 'Sweet' }
-      ]
-    }
+        { value: 'sweet', label: 'Sweet' },
+      ],
+    },
   ];
 
   // Load state from localStorage
   const loadState = (userId) => {
     if (!userId) return null;
-    
+
     try {
       const saved = localStorage.getItem(`quizState_${userId}`);
       if (saved) {
@@ -78,7 +78,7 @@ const Quiz = () => {
           currentQuestion: parsed.currentQuestion || 0,
           answers: parsed.answers || {},
           recommendations: parsed.recommendations || [],
-          isComplete: parsed.isComplete || false
+          isComplete: parsed.isComplete || false,
         };
       }
     } catch (error) {
@@ -93,26 +93,29 @@ const Quiz = () => {
         const user = await getCurrentUser();
         setCurrentUserId(user.id);
         setUserPreferences(user.preferences);
-        
+
         // Extract user's allergies
         let allergies = [];
         if (user.preferences?.dietaryRestrictions) {
           try {
-            allergies = typeof user.preferences.dietaryRestrictions === 'string'
-              ? JSON.parse(user.preferences.dietaryRestrictions)
-              : user.preferences.dietaryRestrictions;
+            allergies =
+              typeof user.preferences.dietaryRestrictions === 'string'
+                ? JSON.parse(user.preferences.dietaryRestrictions)
+                : user.preferences.dietaryRestrictions;
           } catch {
             allergies = [];
           }
         }
         setUserAllergies(allergies);
-        
+
         const foods = await getAllFoods();
         // Filter by budget and allergies - CRITICAL: only safe foods
         const filtered = filterFoodsByPreferences(foods, user.preferences);
         setAvailableFoods(filtered);
 
-        console.log(`Quiz: Loaded ${filtered.length} safe foods (filtered from ${foods.length} total foods)`);
+        console.log(
+          `Quiz: Loaded ${filtered.length} safe foods (filtered from ${foods.length} total foods)`
+        );
         console.log('User allergies:', allergies);
 
         // Load user-specific quiz state
@@ -137,12 +140,12 @@ const Quiz = () => {
   // Save state to localStorage whenever it changes
   useEffect(() => {
     if (!currentUserId || !stateLoaded) return;
-    
+
     const state = {
       currentQuestion,
       answers,
       recommendations,
-      isComplete
+      isComplete,
     };
     localStorage.setItem(`quizState_${currentUserId}`, JSON.stringify(state));
   }, [currentQuestion, answers, recommendations, isComplete, currentUserId, stateLoaded]);
@@ -150,37 +153,36 @@ const Quiz = () => {
   const filterFoodsByPreferences = (foods, preferences) => {
     if (!preferences) return foods;
 
-    let filtered = foods.filter(food => food.amount > 0); // Only in-stock items
+    let filtered = foods.filter((food) => food.amount > 0); // Only in-stock items
 
     // Filter by budget
     if (preferences.budget) {
       const budgetMap = {
-        'budget': 10,
-        'moderate': 20,
-        'premium': 35
+        budget: 10,
+        moderate: 20,
+        premium: 35,
       };
       const maxPrice = budgetMap[preferences.budget.toLowerCase()] || Infinity;
-      filtered = filtered.filter(food => food.price <= maxPrice);
+      filtered = filtered.filter((food) => food.price <= maxPrice);
     }
 
     // Filter by dietary restrictions (allergies)
     if (preferences.dietaryRestrictions) {
       let allergies = [];
       try {
-        allergies = typeof preferences.dietaryRestrictions === 'string'
-          ? JSON.parse(preferences.dietaryRestrictions)
-          : preferences.dietaryRestrictions;
+        allergies =
+          typeof preferences.dietaryRestrictions === 'string'
+            ? JSON.parse(preferences.dietaryRestrictions)
+            : preferences.dietaryRestrictions;
       } catch {
         allergies = [];
       }
 
       if (allergies.length > 0) {
-        filtered = filtered.filter(food => {
+        filtered = filtered.filter((food) => {
           const foodAllergies = food.allergies || [];
-          return !allergies.some(allergy => 
-            foodAllergies.some(foodAllergy => 
-              foodAllergy.toLowerCase() === allergy.toLowerCase()
-            )
+          return !allergies.some((allergy) =>
+            foodAllergies.some((foodAllergy) => foodAllergy.toLowerCase() === allergy.toLowerCase())
           );
         });
       }
@@ -203,96 +205,171 @@ const Quiz = () => {
 
   const generateRecommendations = (userAnswers) => {
     // SAFETY CHECK: Double-verify all foods are allergen-free
-    const safeFoods = availableFoods.filter(food => {
-      const foodAllergies = (food.allergies || []).map(a => a.toLowerCase());
-      const userAllergyList = userAllergies.map(a => a.toLowerCase());
-      const hasAllergen = userAllergyList.some(allergy => foodAllergies.includes(allergy));
-      
+    const safeFoods = availableFoods.filter((food) => {
+      const foodAllergies = (food.allergies || []).map((a) => a.toLowerCase());
+      const userAllergyList = userAllergies.map((a) => a.toLowerCase());
+      const hasAllergen = userAllergyList.some((allergy) => foodAllergies.includes(allergy));
+
       if (hasAllergen) {
-        console.warn(`SAFETY: Filtered out ${food.foodName} - contains allergens: ${food.allergies.join(', ')}`);
+        console.warn(
+          `SAFETY: Filtered out ${food.foodName} - contains allergens: ${food.allergies.join(', ')}`
+        );
       }
-      
+
       return !hasAllergen;
     });
 
     console.log(`Scoring ${safeFoods.length} allergen-safe foods for recommendations`);
 
-    let scored = safeFoods.map(food => {
+    let scored = safeFoods.map((food) => {
       let score = 0;
       const foodName = food.foodName.toLowerCase();
-      const foodAllergies = (food.allergies || []).map(a => a.toLowerCase());
 
       // Category matching
-      if (userAnswers.category === 'beverage' && 
-          (foodName.includes('coffee') || foodName.includes('juice') || foodName.includes('tea') || foodName.includes('smoothie'))) {
+      if (
+        userAnswers.category === 'beverage' &&
+        (foodName.includes('coffee') ||
+          foodName.includes('juice') ||
+          foodName.includes('tea') ||
+          foodName.includes('smoothie'))
+      ) {
         score += 3;
-      } else if (userAnswers.category === 'sweet' && 
-          (foodName.includes('cake') || foodName.includes('yogurt') || foodName.includes('cream') || foodName.includes('cookie'))) {
+      } else if (
+        userAnswers.category === 'sweet' &&
+        (foodName.includes('cake') ||
+          foodName.includes('yogurt') ||
+          foodName.includes('cream') ||
+          foodName.includes('cookie'))
+      ) {
         score += 3;
-      } else if (userAnswers.category === 'savory' && 
-          (foodName.includes('sandwich') || foodName.includes('steak') || foodName.includes('pasta') || 
-           foodName.includes('pizza') || foodName.includes('sushi') || foodName.includes('burrito') || foodName.includes('soup'))) {
+      } else if (
+        userAnswers.category === 'savory' &&
+        (foodName.includes('sandwich') ||
+          foodName.includes('steak') ||
+          foodName.includes('pasta') ||
+          foodName.includes('pizza') ||
+          foodName.includes('sushi') ||
+          foodName.includes('burrito') ||
+          foodName.includes('soup'))
+      ) {
         score += 3;
-      } else if (userAnswers.category === 'snack' && 
-          (foodName.includes('chips') || foodName.includes('pretzel') || foodName.includes('trail mix') || foodName.includes('bar'))) {
+      } else if (
+        userAnswers.category === 'snack' &&
+        (foodName.includes('chips') ||
+          foodName.includes('pretzel') ||
+          foodName.includes('trail mix') ||
+          foodName.includes('bar'))
+      ) {
         score += 3;
       }
 
       // Filling level matching
-      if (userAnswers.filling === 'light' && 
-          (foodName.includes('salad') || foodName.includes('yogurt') || foodName.includes('juice') || foodName.includes('fruit'))) {
+      if (
+        userAnswers.filling === 'light' &&
+        (foodName.includes('salad') ||
+          foodName.includes('yogurt') ||
+          foodName.includes('juice') ||
+          foodName.includes('fruit'))
+      ) {
         score += 2;
-      } else if (userAnswers.filling === 'heavy' && 
-          (foodName.includes('steak') || foodName.includes('pizza') || foodName.includes('burrito') || 
-           foodName.includes('pasta') || foodName.includes('burger'))) {
+      } else if (
+        userAnswers.filling === 'heavy' &&
+        (foodName.includes('steak') ||
+          foodName.includes('pizza') ||
+          foodName.includes('burrito') ||
+          foodName.includes('pasta') ||
+          foodName.includes('burger'))
+      ) {
         score += 2;
       } else if (userAnswers.filling === 'medium') {
         score += 1; // Most foods are medium
       }
 
       // Temperature matching
-      if (userAnswers.temperature === 'hot' && 
-          (foodName.includes('coffee') || foodName.includes('soup') || foodName.includes('tea') || 
-           foodName.includes('steak') || foodName.includes('pizza'))) {
+      if (
+        userAnswers.temperature === 'hot' &&
+        (foodName.includes('coffee') ||
+          foodName.includes('soup') ||
+          foodName.includes('tea') ||
+          foodName.includes('steak') ||
+          foodName.includes('pizza'))
+      ) {
         score += 2;
-      } else if (userAnswers.temperature === 'cold' && 
-          (foodName.includes('cream') || foodName.includes('juice') || foodName.includes('salad') || 
-           foodName.includes('sushi') || foodName.includes('smoothie'))) {
+      } else if (
+        userAnswers.temperature === 'cold' &&
+        (foodName.includes('cream') ||
+          foodName.includes('juice') ||
+          foodName.includes('salad') ||
+          foodName.includes('sushi') ||
+          foodName.includes('smoothie'))
+      ) {
         score += 2;
-      } else if (userAnswers.temperature === 'room' && 
-          (foodName.includes('sandwich') || foodName.includes('chips') || foodName.includes('pretzel'))) {
+      } else if (
+        userAnswers.temperature === 'room' &&
+        (foodName.includes('sandwich') ||
+          foodName.includes('chips') ||
+          foodName.includes('pretzel'))
+      ) {
         score += 2;
       }
 
       // Time of day matching
-      if (userAnswers.timeOfDay === 'breakfast' && 
-          (foodName.includes('coffee') || foodName.includes('yogurt') || foodName.includes('muffin') || foodName.includes('bagel'))) {
+      if (
+        userAnswers.timeOfDay === 'breakfast' &&
+        (foodName.includes('coffee') ||
+          foodName.includes('yogurt') ||
+          foodName.includes('muffin') ||
+          foodName.includes('bagel'))
+      ) {
         score += 2;
-      } else if (userAnswers.timeOfDay === 'lunch' && 
-          (foodName.includes('sandwich') || foodName.includes('salad') || foodName.includes('soup'))) {
+      } else if (
+        userAnswers.timeOfDay === 'lunch' &&
+        (foodName.includes('sandwich') || foodName.includes('salad') || foodName.includes('soup'))
+      ) {
         score += 2;
-      } else if (userAnswers.timeOfDay === 'dinner' && 
-          (foodName.includes('steak') || foodName.includes('pasta') || foodName.includes('pizza') || foodName.includes('sushi'))) {
+      } else if (
+        userAnswers.timeOfDay === 'dinner' &&
+        (foodName.includes('steak') ||
+          foodName.includes('pasta') ||
+          foodName.includes('pizza') ||
+          foodName.includes('sushi'))
+      ) {
         score += 2;
       } else if (userAnswers.timeOfDay === 'anytime') {
         score += 1; // Snacks work anytime
       }
 
       // Flavor profile matching
-      if (userAnswers.flavor === 'rich' && 
-          (foodName.includes('cake') || foodName.includes('steak') || foodName.includes('cream') || 
-           foodName.includes('chocolate') || foodName.includes('cheese'))) {
+      if (
+        userAnswers.flavor === 'rich' &&
+        (foodName.includes('cake') ||
+          foodName.includes('steak') ||
+          foodName.includes('cream') ||
+          foodName.includes('chocolate') ||
+          foodName.includes('cheese'))
+      ) {
         score += 2;
-      } else if (userAnswers.flavor === 'fresh' && 
-          (foodName.includes('salad') || foodName.includes('fruit') || foodName.includes('juice') || 
-           foodName.includes('smoothie') || foodName.includes('sushi'))) {
+      } else if (
+        userAnswers.flavor === 'fresh' &&
+        (foodName.includes('salad') ||
+          foodName.includes('fruit') ||
+          foodName.includes('juice') ||
+          foodName.includes('smoothie') ||
+          foodName.includes('sushi'))
+      ) {
         score += 2;
-      } else if (userAnswers.flavor === 'savory' && 
-          (foodName.includes('steak') || foodName.includes('pizza') || foodName.includes('soup') || 
-           foodName.includes('chips'))) {
+      } else if (
+        userAnswers.flavor === 'savory' &&
+        (foodName.includes('steak') ||
+          foodName.includes('pizza') ||
+          foodName.includes('soup') ||
+          foodName.includes('chips'))
+      ) {
         score += 2;
-      } else if (userAnswers.flavor === 'sweet' && 
-          (foodName.includes('cake') || foodName.includes('yogurt') || foodName.includes('cookie'))) {
+      } else if (
+        userAnswers.flavor === 'sweet' &&
+        (foodName.includes('cake') || foodName.includes('yogurt') || foodName.includes('cookie'))
+      ) {
         score += 2;
       }
 
@@ -301,13 +378,13 @@ const Quiz = () => {
 
     // Sort by score and get top 5
     scored.sort((a, b) => b.score - a.score);
-    const top5 = scored.slice(0, 5).filter(food => food.score > 0);
+    const top5 = scored.slice(0, 5).filter((food) => food.score > 0);
 
     // FINAL SAFETY VERIFICATION
-    const verifiedSafe = top5.filter(food => {
-      const foodAllergies = (food.allergies || []).map(a => a.toLowerCase());
-      const userAllergyList = userAllergies.map(a => a.toLowerCase());
-      return !userAllergyList.some(allergy => foodAllergies.includes(allergy));
+    const verifiedSafe = top5.filter((food) => {
+      const foodAllergies = (food.allergies || []).map((a) => a.toLowerCase());
+      const userAllergyList = userAllergies.map((a) => a.toLowerCase());
+      return !userAllergyList.some((allergy) => foodAllergies.includes(allergy));
     });
 
     if (verifiedSafe.length === 0) {
@@ -327,7 +404,7 @@ const Quiz = () => {
     setAnswers({});
     setRecommendations([]);
     setIsComplete(false);
-    
+
     // Clear user-specific quiz state from localStorage
     if (currentUserId) {
       localStorage.removeItem(`quizState_${currentUserId}`);
@@ -348,8 +425,11 @@ const Quiz = () => {
   const renderStars = (rating) => {
     return (
       <span style={{ marginRight: '5px' }}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <span key={star} style={{ color: rating >= star ? '#f1c40f' : '#e0e0e0', fontSize: '1rem' }}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            style={{ color: rating >= star ? '#f1c40f' : '#e0e0e0', fontSize: '1rem' }}
+          >
             ★
           </span>
         ))}
@@ -360,15 +440,16 @@ const Quiz = () => {
   if (isComplete) {
     return (
       <div className="quiz-container">
-      <div className="quiz-header">
-        <h2>📋 Your Personalized Recommendations</h2>
-        <p>Based on your preferences and quiz answers</p>
-        {userAllergies.length > 0 && (
-          <div className="allergen-safety-notice">
-            ✅ <strong>Allergen-Safe:</strong> All recommendations exclude {userAllergies.join(', ')}
-          </div>
-        )}
-      </div>
+        <div className="quiz-header">
+          <h2>📋 Your Personalized Recommendations</h2>
+          <p>Based on your preferences and quiz answers</p>
+          {userAllergies.length > 0 && (
+            <div className="allergen-safety-notice">
+              ✅ <strong>Allergen-Safe:</strong> All recommendations exclude{' '}
+              {userAllergies.join(', ')}
+            </div>
+          )}
+        </div>
 
         {recommendations.length > 0 ? (
           <div className="quiz-recommendations">
@@ -377,18 +458,23 @@ const Quiz = () => {
                 <div className="recommendation-rank">#{index + 1}</div>
                 <h3>{food.foodName}</h3>
                 <p className="recommendation-price">${food.price.toFixed(2)}</p>
-                
+
                 {/* --- DYNAMIC RATING DISPLAY --- */}
-                <div className="recommendation-rating" style={{ marginBottom: '10px', fontSize: '0.9rem' }}>
-                    {food.rating > 0 ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                            {renderStars(food.rating)}
-                            <strong style={{ color: '#333' }}>{food.rating.toFixed(1)}</strong>
-                            <span style={{ color: '#777', fontSize: '0.9em' }}>({food.numberOfRatings} reviews)</span>
-                        </div>
-                    ) : (
-                        <span style={{ color: '#999', fontStyle: 'italic' }}>No ratings yet</span>
-                    )}
+                <div
+                  className="recommendation-rating"
+                  style={{ marginBottom: '10px', fontSize: '0.9rem' }}
+                >
+                  {food.rating > 0 ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      {renderStars(food.rating)}
+                      <strong style={{ color: '#333' }}>{food.rating.toFixed(1)}</strong>
+                      <span style={{ color: '#777', fontSize: '0.9em' }}>
+                        ({food.numberOfRatings} reviews)
+                      </span>
+                    </div>
+                  ) : (
+                    <span style={{ color: '#999', fontStyle: 'italic' }}>No ratings yet</span>
+                  )}
                 </div>
                 {/* ------------------------------ */}
 
@@ -398,10 +484,7 @@ const Quiz = () => {
                     <small>Contains: {food.allergies.join(', ')}</small>
                   </div>
                 )}
-                <button 
-                  className="btn-primary" 
-                  onClick={() => handleOrderFood(food)}
-                >
+                <button className="btn-primary" onClick={() => handleOrderFood(food)}>
                   Add to Cart
                 </button>
               </div>
@@ -433,8 +516,8 @@ const Quiz = () => {
         <div className="quiz-progress">
           Question {currentQuestion + 1} of {questions.length}
           <div className="progress-bar">
-            <div 
-              className="progress-fill" 
+            <div
+              className="progress-fill"
               style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
             ></div>
           </div>
@@ -467,7 +550,8 @@ const Quiz = () => {
       <div className="quiz-footer">
         <div className="quiz-info-box">
           <div className="quiz-info-item">
-            💰 <strong>Budget:</strong> {userPreferences?.budget 
+            💰 <strong>Budget:</strong>{' '}
+            {userPreferences?.budget
               ? `${userPreferences.budget} ($0-${userPreferences.budget === 'budget' ? '10' : userPreferences.budget === 'moderate' ? '20' : '35'})`
               : 'No Limit'}
           </div>

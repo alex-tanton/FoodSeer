@@ -56,7 +56,12 @@ function CalorieHistory() {
     // construct using explicit y/m/d so this isn't shifted by the browser's timezone parsing of a bare date string
     const date = new Date(year, month - 1, day);
     // render as e.g. "Sun, Oct 18, 2026"
-    return date.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    return date.toLocaleDateString(undefined, {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
   };
 
   // the page's JSX
@@ -86,7 +91,8 @@ function CalorieHistory() {
       {/* shown only once loaded, with no error, and no rows to display */}
       {!loading && !error && history.length === 0 && (
         <div className="loading">
-          No calorie history yet. Place an order or log a meal on the Personal Diet page to start tracking.
+          No calorie history yet. Place an order or log a meal on the Personal Diet page to start
+          tracking.
         </div>
       )}
 
