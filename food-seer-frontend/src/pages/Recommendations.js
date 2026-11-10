@@ -37,16 +37,16 @@ const Recommendations = () => {
     // Filter by budget/cost preference (cumulative ranges)
     if (userData.costPreference && userData.costPreference !== 'no-limit') {
       const budget = userData.costPreference.toLowerCase();
-      
+
       if (budget === 'budget') {
         // Budget option: $0-$10 (most affordable)
-        filtered = filtered.filter(food => food.price <= 10);
+        filtered = filtered.filter((food) => food.price <= 10);
       } else if (budget === 'moderate') {
         // Moderate option: $0-$20 (includes budget + mid-range)
-        filtered = filtered.filter(food => food.price <= 20);
+        filtered = filtered.filter((food) => food.price <= 20);
       } else if (budget === 'premium') {
         // Premium option: $0-$35 (includes everything)
-        filtered = filtered.filter(food => food.price <= 35);
+        filtered = filtered.filter((food) => food.price <= 35);
       }
       // If no-limit or unrecognized value, show all foods (no filtering)
     }
@@ -54,19 +54,22 @@ const Recommendations = () => {
     // Filter by dietary restrictions (allergies)
     if (userData.dietaryRestrictions) {
       const restrictionsInput = userData.dietaryRestrictions.toLowerCase();
-      const userRestrictions = restrictionsInput.split(',').map(r => r.trim()).filter(r => r.length > 0);
-      
-      filtered = filtered.filter(food => {
+      const userRestrictions = restrictionsInput
+        .split(',')
+        .map((r) => r.trim())
+        .filter((r) => r.length > 0);
+
+      filtered = filtered.filter((food) => {
         if (!food.allergies || food.allergies.length === 0) {
           return true; // No allergies means safe for all
         }
-        
+
         // Check if any of the food's allergies match user's restrictions
-        const foodAllergies = food.allergies.map(a => a.toLowerCase());
-        
+        const foodAllergies = food.allergies.map((a) => a.toLowerCase());
+
         // Return false if any user restriction matches any food allergen
-        return !userRestrictions.some(restriction => 
-          foodAllergies.some(allergy => allergy === restriction)
+        return !userRestrictions.some((restriction) =>
+          foodAllergies.some((allergy) => allergy === restriction)
         );
       });
     }
@@ -95,8 +98,11 @@ const Recommendations = () => {
   const renderStars = (rating) => {
     return (
       <span style={{ marginRight: '5px' }}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <span key={star} style={{ color: rating >= star ? '#f1c40f' : '#e0e0e0', fontSize: '1rem' }}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            style={{ color: rating >= star ? '#f1c40f' : '#e0e0e0', fontSize: '1rem' }}
+          >
             ★
           </span>
         ))}
@@ -134,21 +140,14 @@ const Recommendations = () => {
         <div className="preferences-summary">
           <div className="preference-item">
             <span className="preference-label">💰 Budget:</span>
-            <span className="preference-value">
-              {user?.costPreference || 'Not set'}
-            </span>
+            <span className="preference-value">{user?.costPreference || 'Not set'}</span>
           </div>
           <div className="preference-item">
             <span className="preference-label">🥗 Dietary Restrictions:</span>
-            <span className="preference-value">
-              {user?.dietaryRestrictions || 'None'}
-            </span>
+            <span className="preference-value">{user?.dietaryRestrictions || 'None'}</span>
           </div>
         </div>
-        <button 
-          className="update-preferences-button"
-          onClick={handleUpdatePreferences}
-        >
+        <button className="update-preferences-button" onClick={handleUpdatePreferences}>
           Update Preferences
         </button>
       </div>
@@ -166,26 +165,42 @@ const Recommendations = () => {
               <div key={food.id} className="recommendation-card">
                 <div className="recommendation-icon">🍽️</div>
                 <h3>{food.foodName}</h3>
-                
+
                 {/* --- RATING DISPLAY --- */}
                 <div className="food-rating" style={{ margin: '8px 0', fontSize: '0.9rem' }}>
-                    {food.rating > 0 ? (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-                            {renderStars(food.rating)}
-                            <strong style={{ color: '#333' }}>{food.rating.toFixed(1)}</strong>
-                            <span style={{ color: '#777', fontSize: '0.9em' }}>({food.numberOfRatings})</span>
-                        </div>
-                    ) : (
-                        <span style={{ color: '#999', fontStyle: 'italic' }}>No ratings yet</span>
-                    )}
+                  {food.rating > 0 ? (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '5px',
+                      }}
+                    >
+                      {renderStars(food.rating)}
+                      <strong style={{ color: '#333' }}>{food.rating.toFixed(1)}</strong>
+                      <span style={{ color: '#777', fontSize: '0.9em' }}>
+                        ({food.numberOfRatings})
+                      </span>
+                    </div>
+                  ) : (
+                    <span style={{ color: '#999', fontStyle: 'italic' }}>No ratings yet</span>
+                  )}
                 </div>
                 {/* ---------------------- */}
 
                 <div className="food-details">
-                  <p><strong>Price:</strong> ${food.price}</p>
-                  <p><strong>Available:</strong> {food.amount > 0 ? `${food.amount} units` : 'Out of stock'}</p>
+                  <p>
+                    <strong>Price:</strong> ${food.price}
+                  </p>
+                  <p>
+                    <strong>Available:</strong>{' '}
+                    {food.amount > 0 ? `${food.amount} units` : 'Out of stock'}
+                  </p>
                   {food.allergies && food.allergies.length > 0 && (
-                    <p><strong>Allergies:</strong> {food.allergies.join(', ')}</p>
+                    <p>
+                      <strong>Allergies:</strong> {food.allergies.join(', ')}
+                    </p>
                   )}
                 </div>
                 <div className="recommendation-match">
@@ -198,8 +213,13 @@ const Recommendations = () => {
       </div>
 
       <div className="recommendations-footer">
-        <p>Recommendations are based on your cost preference ({user?.costPreference || 'not set'}) and dietary restrictions ({user?.dietaryRestrictions || 'none'}).</p>
-        <p>Showing {filteredFoods.length} of {foods.length} available foods.</p>
+        <p>
+          Recommendations are based on your cost preference ({user?.costPreference || 'not set'})
+          and dietary restrictions ({user?.dietaryRestrictions || 'none'}).
+        </p>
+        <p>
+          Showing {filteredFoods.length} of {foods.length} available foods.
+        </p>
       </div>
     </div>
   );

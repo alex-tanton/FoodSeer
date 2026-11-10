@@ -1,4 +1,3 @@
-
 import { getPantryPairings } from './pantryMatcher';
 
 describe('Pantry-Paired Ordering', () => {
@@ -21,9 +20,7 @@ describe('Pantry-Paired Ordering', () => {
   test('identifies missing ingredients', () => {
     const results = getPantryPairings('CHICKEN WRAP', ['Garlic']);
 
-    const yogurtDip = results.find(
-      recipe => recipe.name === 'Garlic Yogurt Dip'
-    );
+    const yogurtDip = results.find((recipe) => recipe.name === 'Garlic Yogurt Dip');
 
     expect(yogurtDip.missing).toContain('Plain yogurt');
     expect(yogurtDip.readyToMake).toBe(false);
@@ -32,9 +29,7 @@ describe('Pantry-Paired Ordering', () => {
   test('excludes recipes containing restricted allergens', () => {
     const results = getPantryPairings('CHICKEN WRAP', [], ['MILK']);
 
-    expect(results.map(recipe => recipe.name)).toEqual([
-      'Creamy Honey Mustard'
-    ]);
+    expect(results.map((recipe) => recipe.name)).toEqual(['Creamy Honey Mustard']);
   });
 
   test('returns no recommendations for unsupported entrees', () => {

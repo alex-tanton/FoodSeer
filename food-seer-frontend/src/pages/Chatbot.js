@@ -18,9 +18,7 @@ const Chatbot = () => {
     if (!userId) return null;
     try {
       const saved = localStorage.getItem(`chatbotState_${userId}`);
-      return saved
-        ? JSON.parse(saved)
-        : null;
+      return saved ? JSON.parse(saved) : null;
     } catch (err) {
       console.error('Error loading state:', err);
       return null;
@@ -42,8 +40,8 @@ const Chatbot = () => {
           setMessages([
             {
               role: 'assistant',
-              content: "Hi! I'm FoodSeer. Tell me what you're craving."
-            }
+              content: "Hi! I'm FoodSeer. Tell me what you're craving.",
+            },
           ]);
         }
 
@@ -89,22 +87,19 @@ const Chatbot = () => {
         const cards = matchedFoods.map((f) => ({
           role: 'system',
           content: 'recommendation-card',
-          food: f
+          food: f,
         }));
 
         setMessages((prev) => [...prev, ...cards]);
         setRecommendedFoods(matchedFoods);
       } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: 'assistant', content: aiResponse.message }
-        ]);
+        setMessages((prev) => [...prev, { role: 'assistant', content: aiResponse.message }]);
       }
     } catch (err) {
       console.error(err);
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Sorry, something went wrong.' }
+        { role: 'assistant', content: 'Sorry, something went wrong.' },
       ]);
     } finally {
       setIsLoading(false);
@@ -129,10 +124,10 @@ const Chatbot = () => {
       messages: [
         {
           role: 'assistant',
-          content: "Hi! I'm FoodSeer. Tell me what you're craving."
-        }
+          content: "Hi! I'm FoodSeer. Tell me what you're craving.",
+        },
       ],
-      recommendedFoods: []
+      recommendedFoods: [],
     };
 
     setMessages(reset.messages);
@@ -165,10 +160,7 @@ const Chatbot = () => {
                       : 'No common allergens'}
                   </p>
                   <div className="recommendation-actions">
-                    <button
-                      onClick={() => handleOrderFood(msg.food)}
-                      className="btn-primary"
-                    >
+                    <button onClick={() => handleOrderFood(msg.food)} className="btn-primary">
                       Order This Now
                     </button>
                     <button onClick={handleStartOver} className="btn-secondary">
@@ -179,9 +171,7 @@ const Chatbot = () => {
               </div>
             ) : (
               <>
-                <div className="message-avatar">
-                  {msg.role === 'user' ? '👤' : '🤖'}
-                </div>
+                <div className="message-avatar">{msg.role === 'user' ? '👤' : '🤖'}</div>
                 <div className="message-content">{msg.content}</div>
               </>
             )}
@@ -192,7 +182,9 @@ const Chatbot = () => {
           <div className="message assistant">
             <div className="message-avatar">🤖</div>
             <div className="message-content typing">
-              <span></span><span></span><span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
           </div>
         )}
@@ -219,10 +211,7 @@ const Chatbot = () => {
       </div>
 
       <div className="chatbot-footer">
-        <button
-          onClick={() => navigate('/recommendations')}
-          className="btn-link"
-        >
+        <button onClick={() => navigate('/recommendations')} className="btn-link">
           Browse All Foods
         </button>
       </div>

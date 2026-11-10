@@ -1,305 +1,180 @@
 # 🍽️ Food Seer - Smart Meal Recommendation System 🍽️
 
-[![Build & Test](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/run-tests.yml/badge.svg?branch=Development-2)](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/run-tests.yml?query=branch%3ADevelopment-2)
-[![M0 Eval](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/m0-eval.yml/badge.svg?branch=Development-2)](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/m0-eval.yml?query=branch%3ADevelopment-2)
+[![Build & Test](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/run-tests.yml/badge.svg?branch=main)](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/run-tests.yml)
+[![M0 Eval](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/m0-eval.yml/badge.svg?branch=main)](https://github.com/DemarisKeleta/CSC510-Section2-Group7-Proj3/actions/workflows/m0-eval.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.md)
 
-[🎬 Food-Seer- Teaser video](https://vimeo.com/1237864579?share=copy&fl=sv&fe=ci)
+🎬 **[Watch the Teaser Video](https://vimeo.com/1237864579?share=copy&fl=sv&fe=ci)** | 🎥 **[Watch the Feature Walk-through Demo](https://vimeo.com/1237853833?share=copy&fl=sv&fe=ci)**
 
 ---
 
-## 🆕 Project 2 (Fall 2026): what we added
+## 📌 Inherited Baseline: Project 2 Features
 
-Food Seer was built by a CSC510 team in Fall 2025 ([original repo](https://github.com/rishi082000/CSC510-Section2-Group7-Proj3)). In Fall 2026, Group 5 extended it with these milestones:
+Food Seer is an AI-assisted smart meal recommendation and restaurant ordering system. In Project 2, the system was extended with the following milestone features and verification contracts:
 
-| Milestone | What it does | Docs |
-| :- | :- | :- |
-| **M0: risk-killer eval** | Measures whether allergy trace-back warns the right customers (recall) without warning everyone else (precision), on 500 simulated incidents. Runs in CI as **M0 Eval**. The claim currently fails (recall 0.890, precision 0.287), which triggered a spiral review. | [M0 section](docs/allergy-trace-back.md#m0-the-risk-killer-eval) |
-| **Allergy incident trace-back** | When a restaurant or a customer reports an allergic reaction, Food Seer finds other customers who ate the same dishes in that time window and have a matching allergy, and sends each a private safety notice. Staff acknowledge the incident and attach an offer. | [docs/allergy-trace-back.md](docs/allergy-trace-back.md) |
-| **Fitness-based calorie tracking** | Turns a customer's fitness data into a daily calorie budget, tracks calories from today's orders and logged meals, and recommends foods that fit what is left (Personal Diet page). | [docs/personal-diet.md](docs/personal-diet.md) |
-| **Pantry-Paired Ordering** | Matches restaurant entrees with recipes based on ingredients the customer already has in their pantry. Shows ingredient-match percentages, missing ingredients, preparation time, and cooking instructions, while respecting dietary restrictions. Customers can select or skip suggested recipes. | [docs/docs/pantry-pairing.md](docs/docs/pantry-pairing.md) |
+| Milestone | Capability | Documentation |
+| :--- | :--- | :--- |
+| **M0: Risk-Killer Eval** | Measures whether allergy incident trace-back alerts matching customers (recall) without spamming others (precision) on 500 simulated incident runs. Reproducible via `mvn -Dtest=M0TraceEval test`. | [docs/allergy-trace-back.md](docs/allergy-trace-back.md#m0-the-risk-killer-eval) |
+| **Allergy Trace-Back** | When an allergic reaction is reported, Food Seer traces all customers who ordered the dish in the affected window with matching allergies and delivers targeted safety notices. | [docs/allergy-trace-back.md](docs/allergy-trace-back.md) |
+| **Fitness Calorie Tracking** | Integrates customer fitness activity data into daily calorie budgets, tracks meals consumed, and recommends entrees that fit remaining daily targets. | [docs/personal-diet.md](docs/personal-diet.md) |
+| **Pantry-Paired Ordering** | Matches menu items against ingredients currently available in a customer's pantry, calculating match percentage, missing items, and prep steps. | [docs/pantry-pairing.md](docs/pantry-pairing.md) |
+| **AI Assistant Chatbot** | Conversational recommendation assistant powered by local Ollama LLMs (`gemma3:1b` / `qwen2.5:1.5b`) that filters meals based on budget, mood, and dietary restrictions. | In-app (`/chatbot`) |
 
-The **M0 Eval** badge above is red on purpose: it fails whenever the claim fails, so the number is honest and reproducible (`cd food-seer-backend && mvn -Dtest=M0TraceEval test`).
-
-## 🎉 Welcome to Food Seer!
-
-**Food Seer** takes the stress out of choosing what to eat by turning meal selection into a smart and personalized experience. Whether you're in the mood for a quick quiz or a natural conversation, Food Seer helps you find the perfect meal based on your preferences, mood, and budget. Start a short quiz or chat with our AI assistant — and receive a tailored meal suggestion in seconds.
-
-**VIDEO**
-
-[▶️ Watch the Demo Video](https://github.com/rishi082000/CSC510-Section2-Group7-Proj3/blob/main/doc/DEMO.mkv)
+> **Note on M0**: The M0 badge reports the acceptance claim from Project 2. The pipeline runs automatically on pull requests and pushes to `main`.
 
 ---
 
-## Table of Contents
+## 💡 About Food Seer
 
-- [💡 Why This Project?](#-why-this-project)
-- [📈 Use Case](#-use-case)
-- [🚀 Key Features](#-key-features)
-- [Technology Stack](#technology-stack)
-- [🔧 Installation](#-installation)
-- [🎥 Demo Video](#-demo-video)
-- [📊 Project Poster](#-project-poster)
-- [📚 Case Studies](#-case-studies)
-- [🎓 Academic Paper Guidance](#-academic-paper-guidance)
-- [🤝 Contribution Guidelines](#-contribution-guidelines)
-- [📈 Code Coverage](#-code-coverage)
-- [🌐 Future Scope](#-future-scope)
-- [🙌 Contributors](#-contributors)
-- [🙏 Acknowledgements](#-acknowledgements)
-- [💡 Feedback](#-feedback)
-- [🏛️ Governance Model](#governance-model)
-- [🔔 Notifications](#-notifications)
-- [📅 Roadmap & Funding Information](#-roadmap--funding-information)
-- [🌟 Success Stories](#-success-stories)
-- [📎 Recommended Citation](#-recommended-citation)
-- [⚠️ Disclaimer](#️-disclaimer)
+Food Seer simplifies food decisions through guided personalization, eliminating menu decision fatigue:
+
+* **Customers**: Receive conversational recommendations via the AI Chatbot, take mood-based quizzes, pair meals with pantry inventory, track calories against fitness targets, and filter by allergies.
+* **Restaurant / Staff**: Monitor incoming orders, update live food inventory, manage roles, and review/dispatch allergy incident alerts.
+* **Drivers**: View open orders with transparent compensation and distance details, claim orders, and track delivered order history.
 
 ---
 
-## 💡 Why This Project?
+## 🧱 Repository Structure
 
-Menu overload is real — and decision fatigue hits hard when you're hungry. Food Seer eliminates the guesswork by guiding users toward a meal that fits their lifestyle and cravings without the hassle of scrolling through endless options.
-
-We built Food Seer to:
-
-- ✅ Reduce menu fatigue and decision stress  
-- 🤖 Provide personalized suggestions via **AI chat**  
-- ❓ Offer a quiz-based food recommendation system  
-- 🛒 Streamline ordering into a simple “choose and order” flow  
-- 🧾 Empower staff with inventory, user, and order management tools
-- 🚚 Enable drivers to select orders with transparent compensation and earnings tracking
-
-Food Seer bridges **AI-driven personalization** with **restaurant efficiency** — improving both customer experience and backend operations.
-
----
-
-## 📈 Use Cases
-
-### 1. User
-The core customer experience centers on choice and feedback.
-* **Direct Ordering:** Users can order food directly by filtering based on **allergies** and **food ratings**.
-* **AI Chatbot:** Users can interact with an improved AI chatbot to receive personalized meal recommendations.
-* **Mood Quiz:** Users can take a quick interactive quiz to get recommendations based on their current mood.
-* **Rating System:** Once food is delivered, users can rate their meal to provide feedback.
-
-### 2. Admin
-Admins manage the platform using two specific dashboards.
-* **Order Dashboard:** Admins can view all incoming orders and mark them as **fulfilled**.
-* **Food Dashboard:** Admins can manage the food inventory and update stock levels/menu items.
-
-### 3. Driver
-Drivers have autonomy over their deliveries and earnings visibility.
-* **Order Selection:** Drivers can view available orders along with the specific **compensation** for each.
-* **Delivery Workflow:** Drivers can choose to accept an order and, upon completion, mark it as **delivered**.
-* **Earnings:** Drivers can view their **total compensation** accrued over time.
+```text
+FoodSeer/
+├── docs/                      # Architectural & feature design contracts
+│   ├── allergy-trace-back.md  # Allergy trace-back and M0 eval documentation
+│   ├── pantry-pairing.md      # Pantry-to-recipe matching design
+│   └── personal-diet.md       # Fitness-based calorie budgeting
+├── food-seer-backend/         # Spring Boot 3 / Java 21 REST API
+│   ├── pom.xml                # Maven build with JaCoCo, SpotBugs, PMD
+│   ├── src/main/java/         # Application controllers, services, repositories
+│   └── src/test/java/         # JUnit 5 & Mockito test suites
+├── food-seer-frontend/        # React 18 single-page application
+│   ├── package.json           # Frontend dependencies, ESLint, Prettier, Jest
+│   └── src/                   # Components, pages, and UI services
+└── .github/workflows/         # GitHub Actions CI (run-tests.yml, m0-eval.yml)
+```
 
 ---
 
-## 🚀 Key Features
+## 🛠️ Technology Stack
 
-- **Interactive Quiz System** to generate meal recommendations  
-- **Ollama-powered AI chatbot** for conversational food suggestions  
-- **Clean, tab-based UI** for seamless navigation between ordering, recommendations, and account features  
-- **Back-end systems** for inventory, ordering, session management, and user accounts  
-- **Automated tests** with **85%+ coverage** across frontend & backend  
-
----
-
-## Technology Stack
-
-<code><a href="https://www.javascript.com/" target="_blank"><img height="50" src="https://cdn.freelogovectors.net/wp-content/uploads/2020/11/javascript_logo-768x873.png"></a></code>
-<code><a href="https://developer.mozilla.org/en-US/docs/Glossary/HTML5" target="_blank"><img height="50" src="https://cdn.pixabay.com/photo/2017/08/05/11/16/logo-2582748_1280.png"></a></code>
-<code><a href="https://www.java.com/" target="_blank"><img height="50" src="https://www.vectorlogo.zone/logos/java/java-icon.svg"></a></code>
-<code><a href="https://www.mysql.com/" target="_blank"><img height="50" src="https://www.svgrepo.com/show/303251/mysql-logo.svg"></a></code>
-<code><a href="https://www.npmjs.com/" target="_blank"><img height="50" src="https://www.svgrepo.com/show/452077/npm.svg"></a></code>
-<code><a href="https://react.dev/" target="_blank"><img height="50" src="https://www.svgrepo.com/show/452092/react.svg"></a></code>
-<code><a href="https://spring.io/projects/spring-boot" target="_blank"><img height="50" src="https://spring.io/img/projects/spring-boot.svg"></a></code>
-<code><a href="https://ollama.com" target="_blank"><img height="50" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/ollama.svg"></a></code>
+* **Backend**: Java 21, Spring Boot 3.1.4, Spring Security, Spring Data JPA, Hibernate, MySQL, JJWT
+* **Frontend**: React 18, React Router v6, Chart.js, React-Chartjs-2
+* **AI & Intelligence**: Ollama local LLM runtime (`qwen2.5:1.5b` / `gemma3:1b`)
+* **Testing & Quality Assurance**:
+  * **Backend**: JUnit 5, Mockito, JaCoCo (Coverage), Pitest (Mutation), SpotBugs (Dead Code / Bug Patterns), PMD & CPD (Code Quality & Duplicate Detection)
+  * **Frontend**: Jest, React Testing Library, ESLint, Prettier, Depcheck
 
 ---
 
-## 🔧 Installation
+## 🚀 Setup & Local Execution
 
-To set up the project locally, follow these steps.
+### 1. Prerequisites
+* **Java JDK 21+** & **Maven 3.8+**
+* **Node.js 18+** & **npm**
+* **MySQL 8.0+**
+* **Ollama** (optional, required only for local chatbot features)
 
+### 2. Database Setup
+Ensure MySQL is running on `localhost:3306`. The application expects a database named `users`:
+```sql
+CREATE DATABASE IF NOT EXISTS users;
+```
 
-**Clone the Repository:**
+### 3. Backend Setup
+1. **Configure Application Properties**:
+   Copy the template and configure your local credentials:
+   ```bash
+   cd food-seer-backend
+   cp src/main/resources/application.properties.template src/main/resources/application.properties
+   ```
+   In `src/main/resources/application.properties`, update:
+   * `spring.datasource.password`: Your local MySQL root password.
+   * `app.jwt-secret`: A 256-bit secret key (or generate with SHA-256).
+   * `app.admin-user-password`: The default admin user password.
+
+2. **Run Backend Application**:
+   ```bash
+   mvn spring-boot:run
+   ```
+   The backend starts at `http://localhost:8080`.
+
+### 4. Frontend Setup
 ```bash
-git https://github.com/rishi082000/CSC510-Section2-Group7-Proj3.git
+cd food-seer-frontend
+npm install
+npm start
 ```
-Choose Your Installation Method. Detailed instructions are available in [INSTALL.md](INSTALL.md).
+The frontend starts at `http://localhost:3000`. Default admin login: `admin` / (your configured password).
+
+### 5. Ollama Chatbot Setup (Optional)
+If running the conversational AI assistant locally:
+1. Install [Ollama](https://ollama.com).
+2. Pull the model:
+   ```bash
+   ollama pull gemma3:1b
+   ```
+3. Start the Ollama server:
+   ```bash
+   ollama serve
+   ```
+   The service listens on `http://localhost:11434`.
 
 ---
 
-## 🎥 Demo Video
-Check out our demo video to see the application in action! Click the link below to watch:
+## 🧪 Consistency & Code Quality
 
-[▶️ Watch the Demo Video](https://github.com/rishi082000/CSC510-Section2-Group7-Proj3/blob/main/doc/DEMO.mkv)
+Both backend and frontend are configured with consistency, dead code detection, and linting tools:
 
-[▶️ Group 5 Demo Video](https://vimeo.com/1237853833?share=copy&fl=sv&fe=ci)
+### Backend Quality Commands
+```bash
+cd food-seer-backend
 
----
+# Run unit tests and generate JaCoCo coverage report
+mvn clean test
 
-## 📊 Project Poster
-Curious about our project? View our project poster showcasing key aspects of the system [here](https://github.com/rishi082000/CSC510-Section2-Group7-Proj3/blob/main/doc/Section_2_Group_7_Project_3.pdf).
+# Run the 14 focused driver-statistics security authorization tests
+mvn -Dtest=DriverStatsSecurityTest,DriverStatsControllerTest,DriverStatsImplTest test
 
----
+# Run SpotBugs static analysis (detects bug patterns and dead code)
+mvn spotbugs:check
 
-## 📚 Case Studies
+# Run PMD / CPD (detects unused variables/imports, design flaws, and duplicates)
+mvn pmd:check pmd:cpd-check
+```
 
-Food Seer was used and evaluated in a controlled environment by our development team and peers.  
-Through hands-on testing sessions, we observed that Food Seer improves food decision-making by:
+### Frontend Quality Commands
+```bash
+cd food-seer-frontend
 
-- Reducing decision fatigue around choosing meals  
-- Helping users quickly narrow down food options  
-- Providing fast, personalized suggestions through quizzes and AI chat  
-- Making the meal-selection process feel more guided and enjoyable  
+# Run unit tests with coverage
+npm run test:coverage
 
-Our internal testers consistently reported that Food Seer made deciding what to eat **faster**, **simpler**, and **less overwhelming**, especially when unsure where to start.
+# Lint source files with ESLint
+npm run lint
 
-Additional user studies and data-driven evaluations are planned as the system matures.
+# Auto-format files with Prettier
+npm run format
 
----
+# Verify formatting without modifying files
+npm run format:check
 
-## 🎓 Academic Paper Guidance
-
-The guidance for Food Seer's chat bot was based on the influence on the following academic papers. These papers prompted ethical use and implementation of the chat bot for the best experience for users.
-
-- [The influence of chatbot humour on consumer evaluations of services](https://onlinelibrary.wiley.com/doi/full/10.1111/ijcs.12849). - Hyunju Shin, Isabella Bunosso, Lindsay R. Levine
-- [“I Am Here to Assist You Today”: The Role of Entity, Interactivity and Experiential Perceptions in Chatbot Persuasion](https://www.tandfonline.com/doi/abs/10.1080/08838151.2020.1834297?casa_token=w7sm6mnxsvMAAAAA:3MLFEo2kl-5tGra4ProYsyEMoFyJi3MOITlHtuhw8gBd0rTxLLS01ktiG63waepcvlAyx1n_uYZQ). - Carolin Ischen, Theo Araujo, Guda van Noort, Hilde Voorveld, Edith Smit
-- [Understanding the impact of control levels over emotion-aware chatbots](https://www.sciencedirect.com/science/article/pii/S0747563221004453?casa_token=1ktZE4ekOqUAAAAA:5he3BwdaB_6WISF7UTxF9v2JO3KJ4eGiI3VbX48doIW7-s_XUhbHgWC0LoYT83UdYyxG8pHlDA). - Ivo Benke, Ulrich Gnewuch, Alexander Maedche 
-
-
----
-
-## 🤝 Contribution Guidelines
-The rules listed below are to be followed by the ones who will be contributing to the code in the repository:
- 
-- Atleast one review/approval is required from any other contributors of the project to merge a commit to the main branch.  
-- It is recommended to delete the branch as soon as it is merged to the main branch to avoid stale branches in the repository.  
-- It is encouraged to add name tags such as "feature/" or "patch/" in the branches if it is used to add code-patches or features in the project.
-
-For more details on contributing to Food Seer, please read our full guide here: [CONTRIBUTING.md](./CONTRIBUTING.md)
-
----
-
----
-
-## 📈 Code Coverage
-[![codecov](https://codecov.io/gh/rishi082000/CSC510-Section2-Group7-Proj3/branch/main/graph/badge.svg)](https://app.codecov.io/github/rishi082000/CSC510-Section2-Group7-Proj3) 
----
-
-## 🌐 Future Scope
-
-We're excited about the enhancements coming to Food Seer! Here's what's next:
-
-- **Integrate Maps and Live Order Location:**
-  Incorporate real-time location tracking that could help customers stay informed about where their order is and provide admins with clearer delivery visibility.
-
-- **Introduce Driver Ratings:**
-  Allow both admins and customers to rate drivers on delivery time, service quality, and overall experience could help maintain a reliable and professional delivery ecosystem.
-
-- **Support Multi-Order Pickup for Nearby Deliveries:**
-   Give drivers the option to accept multiple orders within close proximity might streamline delivery routes and reduce wait times. 
-
-- **Voice-Enabled Chat Experience:**  
-  Add speech-to-text and text-to-speech so users can talk to the chatbot like a real waiter and receive spoken, natural meal recommendations — making the experience hands-free and more conversational.
-
----
-
-## 🙌 Contributors
-A heartfelt thank you to our contributors who made this project possible:
-
-**Group #13**
-
-- [Justin Kuethe](https://github.com/NovaCorz) - jrkuethe  
-- [Chase Goins](https://github.com/jcgoins2) - jcgoins2  
-- [Andrew Parr](https://github.com/afluffybunny15) - aaparr  
-- [Mukul Sauhta](https://github.com/muksaw) - msauhta2
-
-**Group #7(Section 2)**
-
-- [Rishi Senthil Kumar](https://github.com/Rish1SK) - rsenthi  
-- [Rishabh Ravi Kumar](https://github.com/rishi082000)- rishabh 
-- [Jagadeshwar Muthukumaran](https://github.com/Jagadesh001ops) - jmuthuk  
-- [Krisha Darji](https://github.com/KrishaDarji) - kdarji
-
-
-**Group #5**
-
-- [Demaris Ghide](https://github.com/DemarisKeleta) - gdemarisk
-- [Neelan ](https://github.com/neelansp)   
-- [Tierra Ingram](https://github.com/Tringram1)  
-
----
-
-## 🙏 Acknowledgements
-We extend our heartfelt thanks to Professor Dr. Timothy Menzies for his invaluable guidance in shaping our understanding of effective Software Engineering practices. We’re also deeply grateful to the teaching assistants for their consistent support and encouragement throughout the project.
-
----
-
-## 💡 Feedback
-Your input matters to us! If you have ideas for enhancements or new features, feel free to open an issue or submit a pull request. Thoughtful feedback from contributors like you helps us improve and evolve.
-
----
-
-## Governance Model
-
-Food Seer is maintained as an open-source project by its core development team.  
-Project decisions — including new features, bug fixes, and roadmap updates — are made collaboratively through discussion and consensus among contributors.
-
-While we do not currently have a formal governance structure, our guiding principles are:
-
-- **Transparency:** All changes are proposed and reviewed publicly through GitHub pull requests.  
-- **Collaboration:** Contributions are encouraged from all team members and external participants.  
-- **Consensus-based Decision-Making:** Updates and feature changes are approved when all active contributors agree on the direction.  
-- **Future Growth:** As the project expands and attracts more contributors, we plan to introduce a clearer governance model outlining maintainer roles, voting processes, and long-term project stewardship.
-
-This approach ensures Food Seer remains both open and adaptable while maintaining high standards for code quality and collaboration.
-
----
-
-## 🔔 Notifications
-
-Users can subscribe to notifications to track changes to the Food Seer repository.  
-To follow updates, visit the repo and click:
-
-**Watch → All Activity**
-
-This sends alerts for code updates, pull requests, issues, releases, and discussions.
-
----
-
-## 📅 Funding Information
-
-### Funding & Support
-This project is **self-developed and unfunded**, created as part of academic coursework.  
-- No external financial sponsors  
-- Maintained by the student development team  
-- Future support may include community contributions or academic extensions  
-
----
-
-## 📎 Recommended Citation
-
-If you use Food Seer in academic work, research, or presentations, please cite our project as follows:
-
-**APA Format**
-> Senthil Kumar, R. and Ravi Kumar, R. and Muthukumaran, J. and Darji, K. (2025). *Food Seer: Smart Meal Recommendation System*. GitHub Repository. https://github.com/rishi082000/CSC510-Section2-Group7-Proj3
-
-**BibTeX**
-```bibtex
-@software{foodseer2025,
-  author       = {Senthil Kumar, Rishi and Ravi kumar, Rishabh and Muthukumaran, Jagadeshwar and Darji, Krisha},
-  title        = {Food Seer: Smart Meal Recommendation System},
-  year         = {2025},
-  publisher    = {GitHub},
-  url          = {[https://github.com/rishi082000/CSC510-Section2-Group7-Proj3]},
-}
+# Check for unused dependencies and dead packages
+npm run dead-code
 ```
 
 ---
 
-## ⚠️ Disclaimer
-Food Seer is designed as a smart recommendation system for restaurant delivery services. All meal recommendations are suggestions based on user input and preferences. Individual dietary needs, allergies, and health conditions should always be considered when making food choices. We are not responsible for any adverse reactions or health issues that may arise from following our recommendations.
+## 🎯 Project 3 Scope & Extensions
+
+This repository serves as the baseline for **Project 3: Maintain & Extend**. The upcoming work will build directly upon this foundation:
+
+1. **Four Major Milestones**: High-impact feature expansions to be planned and delivered.
+2. **Regression Guarantees**: All inherited Project 2 unit tests and M0 trace-back evals continue passing.
+3. **Delta Clarity**: Distinct, clean architecture isolating new Project 3 additions while respecting the inherited foundation.
+
+---
+
+## 📄 License & Contributing
+
+* **License**: Distributed under the [MIT License](LICENSE.md).
+* **Contributing**: Guidelines and branch workflow can be found in [CONTRIBUTING.md](CONTRIBUTING.md).
+* **Code of Conduct**: Community guidelines can be found in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).

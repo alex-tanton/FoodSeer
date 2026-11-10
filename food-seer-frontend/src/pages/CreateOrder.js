@@ -20,15 +20,15 @@ const CreateOrder = () => {
       try {
         const user = await getCurrentUser();
 
-	const restrictions = (user.dietaryRestrictions || '')
-		.split(',')
-		.map(item => item.trim().toUpperCase())
-		.filter(Boolean);
+        const restrictions = (user.dietaryRestrictions || '')
+          .split(',')
+          .map((item) => item.trim().toUpperCase())
+          .filter(Boolean);
 
-	setRestrictedAllergens(restrictions);
+        setRestrictedAllergens(restrictions);
 
-	const foodsData = await getAllFoods();
-        setFoods(foodsData.filter(food => food.amount > 0));
+        const foodsData = await getAllFoods();
+        setFoods(foodsData.filter((food) => food.amount > 0));
       } catch (error) {
         console.error('Error fetching foods:', error);
         navigate('/');
@@ -44,15 +44,15 @@ const CreateOrder = () => {
   useEffect(() => {
     if (location.state?.addToCart && foods.length > 0) {
       const recommendedFood = location.state.addToCart;
-      const foodInStock = foods.find(f => f.id === recommendedFood.id);
+      const foodInStock = foods.find((f) => f.id === recommendedFood.id);
 
       if (foodInStock) {
-        setCart(prev => ({
+        setCart((prev) => ({
           ...prev,
           [foodInStock.id]: {
             food: foodInStock,
-            quantity: (prev[foodInStock.id]?.quantity || 0) + 1
-          }
+            quantity: (prev[foodInStock.id]?.quantity || 0) + 1,
+          },
         }));
         setNotification(`✅ ${foodInStock.foodName} has been added to your cart!`);
         setTimeout(() => setNotification(null), 5000);
@@ -73,14 +73,14 @@ const CreateOrder = () => {
       const addedNames = [];
       const outOfStockNames = [];
 
-      setCart(prev => {
+      setCart((prev) => {
         const next = { ...prev };
         for (const item of items) {
-          const foodInStock = foods.find(f => f.id === item.food.id);
+          const foodInStock = foods.find((f) => f.id === item.food.id);
           if (foodInStock) {
             next[foodInStock.id] = {
               food: foodInStock,
-              quantity: (next[foodInStock.id]?.quantity || 0) + item.quantity
+              quantity: (next[foodInStock.id]?.quantity || 0) + item.quantity,
             };
             addedNames.push(foodInStock.foodName);
           } else {
@@ -94,7 +94,9 @@ const CreateOrder = () => {
         setNotification(`✅ ${addedNames.join(', ')} added to your cart!`);
         setTimeout(() => setNotification(null), 5000);
       } else if (outOfStockNames.length > 0) {
-        setNotification(`⚠️ Sorry, ${outOfStockNames.join(', ')} ${outOfStockNames.length > 1 ? 'are' : 'is'} currently out of stock.`);
+        setNotification(
+          `⚠️ Sorry, ${outOfStockNames.join(', ')} ${outOfStockNames.length > 1 ? 'are' : 'is'} currently out of stock.`
+        );
         setTimeout(() => setNotification(null), 5000);
       }
       window.history.replaceState({}, document.title);
@@ -102,14 +104,14 @@ const CreateOrder = () => {
   }, [location.state, foods]);
 
   const addToCart = (food) => {
-    setCart(prev => ({
+    setCart((prev) => ({
       ...prev,
-      [food.id]: { food, quantity: (prev[food.id]?.quantity || 0) + 1 }
+      [food.id]: { food, quantity: (prev[food.id]?.quantity || 0) + 1 },
     }));
   };
 
   const removeFromCart = (foodId) => {
-    setCart(prev => {
+    setCart((prev) => {
       const newCart = { ...prev };
       if (newCart[foodId].quantity > 1) {
         newCart[foodId].quantity -= 1;
@@ -120,15 +122,23 @@ const CreateOrder = () => {
     });
   };
 
-  const clearCart = () => { setCart({}); };
+  const clearCart = () => {
+    setCart({});
+  };
 
   const getDeliveryCost = () => {
-    const itemsTotal = Object.values(cart).reduce((total, item) => total + (item.food.price * item.quantity), 0);
+    const itemsTotal = Object.values(cart).reduce(
+      (total, item) => total + item.food.price * item.quantity,
+      0
+    );
     return parseFloat((0.3 * itemsTotal).toFixed(2));
-  }
+  };
 
   const getTotalPrice = () => {
-    const itemsTotal = Object.values(cart).reduce((total, item) => total + (item.food.price * item.quantity), 0);
+    const itemsTotal = Object.values(cart).reduce(
+      (total, item) => total + item.food.price * item.quantity,
+      0
+    );
     const delivery = getDeliveryCost();
     return parseFloat((itemsTotal + delivery).toFixed(2));
   };
@@ -149,10 +159,17 @@ const CreateOrder = () => {
 
     setSubmitting(true);
     try {
-      const orderFoods = Object.values(cart).flatMap(item => 
+      const orderFoods = Object.values(cart).flatMap((item) =>
         Array(item.quantity).fill({ id: item.food.id })
       );
-      const orderData = { name: orderName, foods: orderFoods, isFulfilled: false, cost: getTotalPrice(), status: 'Placed', deliveryCost: getDeliveryCost() };
+      const orderData = {
+        name: orderName,
+        foods: orderFoods,
+        isFulfilled: false,
+        cost: getTotalPrice(),
+        status: 'Placed',
+        deliveryCost: getDeliveryCost(),
+      };
       console.log('Submitting order data:', orderData);
       await createOrder(orderData);
       alert('Order placed successfully!');
@@ -165,7 +182,7 @@ const CreateOrder = () => {
     }
   };
 
-  const filteredFoods = foods.filter(food =>
+  const filteredFoods = foods.filter((food) =>
     food.foodName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -173,8 +190,11 @@ const CreateOrder = () => {
   const renderStars = (rating) => {
     return (
       <span style={{ marginRight: '5px' }}>
-        {[1, 2, 3, 4, 5].map(star => (
-          <span key={star} style={{ color: rating >= star ? '#f1c40f' : '#e0e0e0', fontSize: '1rem' }}>
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            style={{ color: rating >= star ? '#f1c40f' : '#e0e0e0', fontSize: '1rem' }}
+          >
             ★
           </span>
         ))}
@@ -182,13 +202,20 @@ const CreateOrder = () => {
     );
   };
 
-  if (loading) return <div className="create-order-container"><div className="loading">Loading...</div></div>;
+  if (loading)
+    return (
+      <div className="create-order-container">
+        <div className="loading">Loading...</div>
+      </div>
+    );
 
   return (
     <div className="create-order-container">
       <div className="create-order-header">
         <h1>🛒 Create New Order</h1>
-        <button className="back-button" onClick={() => navigate('/recommendations')}>Back</button>
+        <button className="back-button" onClick={() => navigate('/recommendations')}>
+          Back
+        </button>
       </div>
 
       {notification && <div className="notification-banner">{notification}</div>}
@@ -210,40 +237,67 @@ const CreateOrder = () => {
             <p>No foods available for ordering.</p>
           ) : (
             <div className="foods-list">
-              {filteredFoods.map(food => (
+              {filteredFoods.map((food) => (
                 <div key={food.id} className="food-item">
                   <div className="food-item-info" style={{ width: '100%' }}>
-                    
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                        <h3 style={{ margin: 0 }}>{food.foodName}</h3>
-                        <span style={{ fontWeight: 'bold', color: '#2ecc71', fontSize: '1.1rem', backgroundColor: '#e8f8f5', padding: '2px 8px', borderRadius: '4px' }}>
-                            ${food.price}
-                        </span>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '5px',
+                      }}
+                    >
+                      <h3 style={{ margin: 0 }}>{food.foodName}</h3>
+                      <span
+                        style={{
+                          fontWeight: 'bold',
+                          color: '#2ecc71',
+                          fontSize: '1.1rem',
+                          backgroundColor: '#e8f8f5',
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        ${food.price}
+                      </span>
                     </div>
 
                     {/* CORRECTED RATING ROW */}
-                    <div className="food-rating-row" style={{ marginBottom: '8px', fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}>
-                         {food.rating > 0 ? (
-                             <>
-                                {renderStars(food.rating)}
-                                <strong style={{ marginRight: '5px' }}>{food.rating.toFixed(1)}</strong>
-                                <span style={{ color: '#7f8c8d', fontSize: '0.85rem' }}>({food.numberOfRatings})</span>
-                             </>
-                         ) : (
-                             <span style={{ color: '#95a5a6', fontStyle: 'italic' }}>No ratings yet</span>
-                         )}
+                    <div
+                      className="food-rating-row"
+                      style={{
+                        marginBottom: '8px',
+                        fontSize: '0.9rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {food.rating > 0 ? (
+                        <>
+                          {renderStars(food.rating)}
+                          <strong style={{ marginRight: '5px' }}>{food.rating.toFixed(1)}</strong>
+                          <span style={{ color: '#7f8c8d', fontSize: '0.85rem' }}>
+                            ({food.numberOfRatings})
+                          </span>
+                        </>
+                      ) : (
+                        <span style={{ color: '#95a5a6', fontStyle: 'italic' }}>
+                          No ratings yet
+                        </span>
+                      )}
                     </div>
 
                     <div style={{ fontSize: '0.85rem', color: '#666' }}>
-                        <p style={{ margin: '2px 0' }}>Stock: {food.amount} available</p>
-                        {food.allergies && food.allergies.length > 0 && (
-                            <p className="allergies-text" style={{ margin: '2px 0', color: '#e74c3c' }}>
-                                Allergies: {food.allergies.join(', ')}
-                            </p>
-                        )}
+                      <p style={{ margin: '2px 0' }}>Stock: {food.amount} available</p>
+                      {food.allergies && food.allergies.length > 0 && (
+                        <p className="allergies-text" style={{ margin: '2px 0', color: '#e74c3c' }}>
+                          Allergies: {food.allergies.join(', ')}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  
+
                   <button
                     className="add-button"
                     onClick={() => addToCart(food)}
@@ -262,7 +316,14 @@ const CreateOrder = () => {
           <h2>Your Cart</h2>
           <div className="order-name-input">
             <label htmlFor="orderName">Order Name:</label>
-            <input type="text" id="orderName" placeholder="e.g., Lunch Order" value={orderName} onChange={(e) => setOrderName(e.target.value)} className="text-input" />
+            <input
+              type="text"
+              id="orderName"
+              placeholder="e.g., Lunch Order"
+              value={orderName}
+              onChange={(e) => setOrderName(e.target.value)}
+              className="text-input"
+            />
           </div>
 
           {getTotalItems() === 0 ? (
@@ -270,28 +331,56 @@ const CreateOrder = () => {
           ) : (
             <>
               <div className="cart-items">
-                {Object.values(cart).map(item => (
+                {Object.values(cart).map((item) => (
                   <div key={item.food.id} className="cart-item">
                     <div className="cart-item-info">
                       <h4>{item.food.foodName}</h4>
-                      <p>${item.food.price} × {item.quantity} = ${item.food.price * item.quantity}</p>
+                      <p>
+                        ${item.food.price} × {item.quantity} = ${item.food.price * item.quantity}
+                      </p>
                     </div>
                     <div className="cart-item-actions">
-                      <button className="quantity-button" onClick={() => removeFromCart(item.food.id)}>-</button>
+                      <button
+                        className="quantity-button"
+                        onClick={() => removeFromCart(item.food.id)}
+                      >
+                        -
+                      </button>
                       <span className="quantity">{item.quantity}</span>
-                      <button className="quantity-button" onClick={() => addToCart(item.food)} disabled={item.quantity >= item.food.amount}>+</button>
+                      <button
+                        className="quantity-button"
+                        onClick={() => addToCart(item.food)}
+                        disabled={item.quantity >= item.food.amount}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="cart-summary">
-                <div className="summary-row"><span>Total Items:</span><span>{getTotalItems()}</span></div>
-                <div className="summary-row"><span>Delivery fee:</span><span>{getDeliveryCost()}</span></div>
-                <div className="summary-row total"><span>Total Price:</span><span>${getTotalPrice()}</span></div>
+                <div className="summary-row">
+                  <span>Total Items:</span>
+                  <span>{getTotalItems()}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Delivery fee:</span>
+                  <span>{getDeliveryCost()}</span>
+                </div>
+                <div className="summary-row total">
+                  <span>Total Price:</span>
+                  <span>${getTotalPrice()}</span>
+                </div>
               </div>
               <div className="cart-actions">
-                <button className="clear-button" onClick={clearCart} disabled={submitting}>Clear Cart</button>
-                <button className="submit-button" onClick={handleSubmitOrder} disabled={submitting || !orderName.trim()}>
+                <button className="clear-button" onClick={clearCart} disabled={submitting}>
+                  Clear Cart
+                </button>
+                <button
+                  className="submit-button"
+                  onClick={handleSubmitOrder}
+                  disabled={submitting || !orderName.trim()}
+                >
                   {submitting ? 'Placing Order...' : 'Place Order'}
                 </button>
               </div>
@@ -299,10 +388,7 @@ const CreateOrder = () => {
           )}
         </div>
       </div>
-      <PantryPairing
-	cart={cart}
-	restrictedAllergens={restrictedAllergens}
-/>
+      <PantryPairing cart={cart} restrictedAllergens={restrictedAllergens} />
     </div>
   );
 };

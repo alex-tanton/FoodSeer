@@ -14,7 +14,7 @@ const UserManagement = () => {
     try {
       const user = await getCurrentUser();
       setCurrentUserId(user.id);
-      
+
       // Check if user is admin
       if (user.role !== 'ROLE_ADMIN') {
         alert('Access denied. Admin privileges required.');
@@ -34,6 +34,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleEditRole = (user) => {
@@ -137,15 +138,15 @@ const UserManagement = () => {
         </div>
         <div className="stat-card">
           <h3>Admins</h3>
-          <p className="stat-number">{users.filter(u => u.role === 'ROLE_ADMIN').length}</p>
+          <p className="stat-number">{users.filter((u) => u.role === 'ROLE_ADMIN').length}</p>
         </div>
         <div className="stat-card">
           <h3>Staff</h3>
-          <p className="stat-number">{users.filter(u => u.role === 'ROLE_STAFF').length}</p>
+          <p className="stat-number">{users.filter((u) => u.role === 'ROLE_STAFF').length}</p>
         </div>
         <div className="stat-card">
           <h3>Customers</h3>
-          <p className="stat-number">{users.filter(u => u.role === 'ROLE_CUSTOMER').length}</p>
+          <p className="stat-number">{users.filter((u) => u.role === 'ROLE_CUSTOMER').length}</p>
         </div>
       </div>
 
@@ -153,8 +154,12 @@ const UserManagement = () => {
         <div className="edit-role-modal">
           <div className="modal-content">
             <h2>Edit User Role</h2>
-            <p><strong>User:</strong> {editingUser.username}</p>
-            <p><strong>Email:</strong> {editingUser.email}</p>
+            <p>
+              <strong>User:</strong> {editingUser.username}
+            </p>
+            <p>
+              <strong>Email:</strong> {editingUser.email}
+            </p>
             <div className="form-group">
               <label htmlFor="role">Select Role:</label>
               <select
@@ -204,7 +209,7 @@ const UserManagement = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
+              {users.map((user) => (
                 <tr key={user.id} className={user.id === currentUserId ? 'current-user' : ''}>
                   <td>{user.id}</td>
                   <td>
@@ -220,10 +225,7 @@ const UserManagement = () => {
                   <td>{user.costPreference || '-'}</td>
                   <td>{user.dietaryRestrictions || '-'}</td>
                   <td className="actions-cell">
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEditRole(user)}
-                    >
+                    <button className="edit-button" onClick={() => handleEditRole(user)}>
                       Change Role
                     </button>
                     <button
@@ -245,4 +247,3 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
-

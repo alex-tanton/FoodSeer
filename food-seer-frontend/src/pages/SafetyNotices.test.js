@@ -22,11 +22,12 @@ const unreadNotice = {
   remedy: 'Full refund or a free remake',
 };
 
-const renderPage = () => render(
-  <MemoryRouter>
-    <SafetyNotices />
-  </MemoryRouter>
-);
+const renderPage = () =>
+  render(
+    <MemoryRouter>
+      <SafetyNotices />
+    </MemoryRouter>
+  );
 
 describe('SafetyNotices', () => {
   beforeEach(() => {
@@ -62,7 +63,9 @@ describe('SafetyNotices', () => {
   test('acknowledging a notice calls the API and reloads', async () => {
     getMyNotifications
       .mockResolvedValueOnce([unreadNotice])
-      .mockResolvedValueOnce([{ ...unreadNotice, acknowledged: true, acknowledgedAt: '2026-10-12T12:05:00' }]);
+      .mockResolvedValueOnce([
+        { ...unreadNotice, acknowledged: true, acknowledgedAt: '2026-10-12T12:05:00' },
+      ]);
     acknowledgeNotification.mockResolvedValue({ ...unreadNotice, acknowledged: true });
 
     renderPage();
