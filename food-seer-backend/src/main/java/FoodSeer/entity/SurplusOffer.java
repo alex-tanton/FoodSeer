@@ -29,9 +29,9 @@ public class SurplusOffer {
     @ElementCollection
     private List<String> allergens = new ArrayList<>();
     private Integer calories;
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal originalPrice;
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal discountedPrice;
     @Column(nullable = false)
     private int remainingPortions;

@@ -118,4 +118,16 @@ class SurplusPersistenceTest {
             users.save(user);
         }
     }
+
+    @Test
+    void moneyColumnsSupportTheMenuPriceAndQuantityRangesWithoutRounding() {
+        Food food = foods.save(new Food("Price boundary", 0, Integer.MAX_VALUE, List.of()));
+        BigDecimal price = new BigDecimal("2147483646.99");
+        Long expensiveOffer = service.publish(new SurplusOfferRequest(food.getId(), "Rice", price,
+                10000, "Desk", now, now.plusSeconds(7200), now.plusSeconds(3600))).id();
+        var reservation = service.reserve(expensiveOffer, "surplus-alice",
+                new SurplusReservationRequest(10000, now.plusSeconds(600)));
+        assertEquals(new BigDecimal("21474836469900.00"),
+                reservations.findById(reservation.id()).orElseThrow().getTotalPrice());
+    }
 }

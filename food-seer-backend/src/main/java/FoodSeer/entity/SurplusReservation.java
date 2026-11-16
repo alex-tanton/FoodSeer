@@ -25,7 +25,7 @@ public class SurplusReservation {
     private String customerUsername;
     @Column(nullable = false)
     private int quantity;
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(nullable = false, precision = 16, scale = 2)
     private BigDecimal totalPrice;
     @Column(nullable = false)
     private Instant pickupAt;
