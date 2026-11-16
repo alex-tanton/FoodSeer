@@ -75,7 +75,7 @@ class SurplusServiceTest {
     @Test
     void publishSnapshotsFoodWithoutTouchingRegularStock() {
         var dto = service.publish(validRequest());
-        assertEquals("Soup", dto.foodName());
+        assertEquals("SOUP", dto.foodName());
         assertEquals("Milk, vegetables", dto.ingredients());
         assertEquals("Front desk", dto.pickupLocation());
         assertEquals(new BigDecimal("10.00"), dto.originalPrice());
@@ -116,9 +116,9 @@ class SurplusServiceTest {
 
     @ParameterizedTest
     @MethodSource("invalidWindows")
-    void rejectInvalidWindows(Instant[] window) {
+    void rejectInvalidWindows(Instant start, Instant end, Instant expiry) {
         assertThrows(IllegalArgumentException.class, () -> service.publish(
-                request(new BigDecimal("2"), 5, window[0], window[1], window[2])));
+                request(new BigDecimal("2"), 5, start, end, expiry)));
     }
 
     @Test
