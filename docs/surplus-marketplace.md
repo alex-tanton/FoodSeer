@@ -118,6 +118,37 @@ role/ownership boundaries, malformed requests, and UI error recovery. The browse
 test publishes as staff, reserves as a customer, collects as staff, and checks
 the persisted reservation and unchanged regular inventory.
 
+### Verification recorded November 16, 2026
+
+| Check | Result |
+| --- | --- |
+| Surplus service, controller, persistence, and real-browser tests | 56 passed |
+| Full Selenium regression suite | 44 passed |
+| Frontend Jest suite | 41 passed |
+| Complete default Maven suite | 410 run; 409 passed, 1 intermittent inherited chatbot failure |
+| Isolated rerun of `ChatServiceImplTest` | All 5 passed |
+| Frontend ESLint, Prettier check, and production build | Passed |
+| Backend SpotBugs, PMD, and CPD commands | Completed successfully with advisory findings |
+
+The inherited `ChatServiceImplTest.test_ErrorHandling_NoCrash` calls live local
+Ollama with "Cause error" but does not trigger the mocked repository failure,
+because that message is not a recommendation request. Its assertion depends on
+whether the model's actual response contains the word "error". Neither that test
+nor the chatbot implementation changed in this feature branch.
+
+The separately invoked M0 allergy evaluation also reproduces its already
+documented failure (0.890 recall, below its 0.95 target). It is not part of the
+default Maven suite, and surplus reservations do not change its behavior.
+
+Backend verification used the Java 21 runtime and H2, with Chrome for browser
+tests. MySQL-specific behavior has not been exercised. No dependency versions or
+lockfiles were changed.
+
+Static analysis remains advisory under the repository's existing configuration.
+Reports include mutable JPA-entity exposure warnings, style findings, and two
+pre-existing duplication groups in the food/order DTOs and entities. Those
+commands succeeding does not mean the reports contain zero findings.
+
 ## Deliberate limits
 
 This version supports one restaurant and pickup only. It does not process online
