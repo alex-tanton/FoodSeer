@@ -21,6 +21,7 @@ import Navigation from './components/Navigation';
 import DriverDashboard from './pages/DriverDashboard';
 import AllergyIncidents from './pages/AllergyIncidents';
 import SafetyNotices from './pages/SafetyNotices';
+import SurplusMarketplace from './pages/SurplusMarketplace';
 import { isAuthenticated } from './services/api';
 
 // Protected Route component
@@ -222,6 +223,18 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <SafetyNotices />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch all - redirect to login */}
+          <Route
+            path="/surplus"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <SurplusMarketplace />
                 </AppLayout>
               </ProtectedRoute>
             }

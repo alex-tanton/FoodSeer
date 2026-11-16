@@ -71,6 +71,17 @@ const Navigation = () => {
 
         <div className={`nav-menu ${menuOpen ? 'open' : ''}`}>
           <div className="nav-links">
+            {(isStandardUser || isStaff) && (
+              <button
+                className={`nav-link ${location.pathname === '/surplus' ? 'active' : ''}`}
+                onClick={() => {
+                  navigate('/surplus');
+                  setMenuOpen(false);
+                }}
+              >
+                Surplus Marketplace
+              </button>
+            )}
             {/* Customer-only menu items */}
             {isStandardUser && (
               <>
