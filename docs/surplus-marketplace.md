@@ -39,3 +39,89 @@ This first version uses FoodSeer's existing single-restaurant model.
 
 Keep each step in small commits. Run backend/frontend regression suites and the
 repository's lint, formatting, build, and static-analysis checks.
+
+## Try it
+
+1. Start the backend and frontend following the repository README. Hibernate's
+   existing `ddl-auto=update` setting creates the two new surplus tables.
+2. Log in as staff or admin and open **Surplus Marketplace** (`/surplus`).
+3. Choose a menu item, enter ingredients, discount price, available portions,
+   pickup location, pickup window, and booking deadline. Publish the offer.
+4. Log in as a customer. The marketplace shows available offers with their
+   published ingredients, allergen tags, prices, remaining portions, and times.
+5. Choose a quantity and pickup time. Reserve; the confirmation shows the
+   reservation number and total payable at pickup. Find it under **My reservations**.
+6. Cancel before the chosen pickup time to return portions to the offer, or visit
+   the pickup location. Staff locate the reservation number under **Customer
+   reservations** and mark it collected during the pickup window.
+
+## API
+
+All routes require authentication. Drivers cannot access the marketplace.
+
+| Method and path | Role | Result |
+| --- | --- | --- |
+| `GET /api/surplus/offers` | Customer, staff, admin | Available offers, earliest deadline first |
+| `GET /api/surplus/offers/manage` | Staff, admin | All offers, including sold-out/expired offers |
+| `POST /api/surplus/offers` | Staff, admin | Publish an offer; 201 |
+| `POST /api/surplus/offers/{id}/reservations` | Customer | Reserve portions; 201 |
+| `GET /api/surplus/reservations` | Customer, staff, admin | Own reservations for customers, all for staff/admins |
+| `POST /api/surplus/reservations/{id}/cancel` | Customer | Cancel own reservation before pickup |
+| `POST /api/surplus/reservations/{id}/collect` | Staff, admin | Mark reserved portions collected |
+
+Publish body (replace example times with future instants):
+
+```json
+{
+  "foodId": 1,
+  "ingredients": "Rice, vegetables, soy sauce",
+  "discountedPrice": 3.25,
+  "portions": 5,
+  "pickupLocation": "Restaurant front desk",
+  "pickupStart": "2030-06-01T18:00:00Z",
+  "pickupEnd": "2030-06-01T20:00:00Z",
+  "expiresAt": "2030-06-01T19:00:00Z"
+}
+```
+
+Reserve body:
+
+```json
+{ "quantity": 2, "pickupAt": "2030-06-01T19:30:00Z" }
+```
+
+Quantities must be JSON integers from 1 to 10000. Invalid input returns 400;
+unknown resources return 404; expired, insufficient-stock, late-cancellation,
+and completed-reservation conflicts return 409. Unauthorized roles or attempts
+to cancel another customer's reservation return 403.
+
+## Tests
+
+```bash
+# Backend service rules, real HTTP security filters, and H2 concurrent transactions
+cd food-seer-backend
+mvn -Dtest=SurplusServiceTest,SurplusControllerTest,SurplusPersistenceTest test
+
+# Real Chrome + API + database workflow; start the React frontend on port 3000 first
+# Configure an isolated test database as for the existing browser tests.
+mvn -Dtest=SurplusMarketplaceTest test
+
+# Frontend marketplace interactions and authenticated API client
+cd ../food-seer-frontend
+CI=true npm test -- --watchAll=false --runInBand SurplusMarketplace surplusApi
+```
+
+The concurrency test starts simultaneous transactions against the last remaining
+portion and requires exactly one successful reservation. Other tests cover
+cancellation persistence, allergy conflict rollback, price and time validation,
+role/ownership boundaries, malformed requests, and UI error recovery. The browser
+test publishes as staff, reserves as a customer, collects as staff, and checks
+the persisted reservation and unchanged regular inventory.
+
+## Deliberate limits
+
+This version supports one restaurant and pickup only. It does not process online
+payments, deliver surplus meals, add reservations to calorie logs, or include
+them in delivery-order incident tracing. Staff should verify the menu item's
+allergen tags before publishing; ingredient text is displayed, not automatically
+classified. Those integrations can be separate follow-up milestones.
