@@ -23,7 +23,12 @@ describe('surplus API', () => {
     [() => getSurplusOffers(), '/offers', 'GET', undefined],
     [() => getSurplusOffers(true), '/offers/manage', 'GET', undefined],
     [() => publishSurplusOffer({ foodId: 1 }), '/offers', 'POST', { foodId: 1 }],
-    [() => reserveSurplusOffer(2, { quantity: 3 }), '/offers/2/reservations', 'POST', { quantity: 3 }],
+    [
+      () => reserveSurplusOffer(2, { quantity: 3 }),
+      '/offers/2/reservations',
+      'POST',
+      { quantity: 3 },
+    ],
     [() => getSurplusReservations(), '/reservations', 'GET', undefined],
     [() => cancelSurplusReservation(3), '/reservations/3/cancel', 'POST', undefined],
     [() => collectSurplusReservation(3), '/reservations/3/collect', 'POST', undefined],
@@ -42,7 +47,12 @@ describe('surplus API', () => {
   });
 
   test('handles non-JSON error responses', async () => {
-    fetch.mockResolvedValue({ ok: false, json: async () => { throw new Error('HTML'); } });
+    fetch.mockResolvedValue({
+      ok: false,
+      json: async () => {
+        throw new Error('HTML');
+      },
+    });
     await expect(getSurplusOffers()).rejects.toThrow('Please try again.');
   });
 });
