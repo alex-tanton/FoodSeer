@@ -144,4 +144,25 @@ class SurplusControllerTest {
         when(service.cancel(2L, "alice")).thenThrow(new AccessDeniedException("Not yours."));
         mvc.perform(post("/api/surplus/reservations/2/cancel")).andExpect(status().isForbidden());
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"1.5", "\"2\"", "2147483648", "true"})
+    @WithMockUser(roles = "CUSTOMER")
+    void fractionalStringOverflowAndBooleanQuantitiesAreRejected(String quantity) throws Exception {
+        mvc.perform(post("/api/surplus/offers/1/reservations").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"quantity\":" + quantity + ",\"pickupAt\":\"2026-11-16T19:00:00Z\"}"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(service);
+    }
+
+    @Test
+    @WithMockUser(roles = "STAFF")
+    void fractionalOfferPortionsAndMalformedJsonAreBadRequests() throws Exception {
+        mvc.perform(post("/api/surplus/offers").contentType(MediaType.APPLICATION_JSON)
+                .content(OFFER.replace("\"portions\":5", "\"portions\":1.5")))
+                .andExpect(status().isBadRequest());
+        mvc.perform(post("/api/surplus/offers").contentType(MediaType.APPLICATION_JSON).content("{"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(service);
+    }
 }

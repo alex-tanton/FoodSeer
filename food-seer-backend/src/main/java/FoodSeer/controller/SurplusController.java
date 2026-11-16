@@ -8,6 +8,7 @@ import FoodSeer.exception.ErrorDetails;
 import FoodSeer.service.SurplusService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -77,5 +78,11 @@ public class SurplusController {
     public ResponseEntity<ErrorDetails> conflict(IllegalStateException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ErrorDetails(new Date(), exception.getMessage(), "Surplus reservation conflict"));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorDetails> malformedRequest(HttpMessageNotReadableException exception) {
+        return ResponseEntity.badRequest().body(new ErrorDetails(new Date(),
+                "Provide valid JSON with whole-number portions and ISO timestamps.", "Invalid surplus request"));
     }
 }
