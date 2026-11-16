@@ -9,6 +9,10 @@ import FoodSeer.entity.SurplusOffer;
 public record SurplusOfferDto(Long id, String foodName, String ingredients, List<String> allergens,
         Integer calories, BigDecimal originalPrice, BigDecimal discountedPrice, int remainingPortions,
         String pickupLocation, Instant pickupStart, Instant pickupEnd, Instant expiresAt) {
+    public SurplusOfferDto {
+        allergens = List.copyOf(allergens);
+    }
+
     public static SurplusOfferDto from(SurplusOffer offer) {
         return new SurplusOfferDto(offer.getId(), offer.getFoodName(), offer.getIngredients(),
                 List.copyOf(offer.getAllergens()), offer.getCalories(), offer.getOriginalPrice(),

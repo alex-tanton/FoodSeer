@@ -86,6 +86,16 @@ class SurplusServiceTest {
         verify(foods, never()).save(any());
     }
 
+    @Test
+    void offerDtoDefensivelyCopiesAllergens() {
+        List<String> allergens = new ArrayList<>(List.of("MILK"));
+        var dto = new SurplusOfferDto(1L, "Soup", "Milk", allergens, 100,
+                BigDecimal.TEN, BigDecimal.ONE, 2, "Desk", NOW, NOW.plusSeconds(2), NOW.plusSeconds(1));
+        allergens.clear();
+        assertEquals(List.of("MILK"), dto.allergens());
+        assertThrows(UnsupportedOperationException.class, () -> dto.allergens().clear());
+    }
+
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = {"0", "-1", "10", "11", "1.001"})

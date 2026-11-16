@@ -50,7 +50,7 @@ class SurplusPersistenceTest {
     }
 
     @Test
-    void twoCustomersCompetingForLastPortionCannotOversell() throws Exception {
+    void competingReservationsForLastPortionCannotOversell() throws Exception {
         ExecutorService executor = Executors.newFixedThreadPool(2);
         CountDownLatch ready = new CountDownLatch(2);
         CountDownLatch start = new CountDownLatch(1);
