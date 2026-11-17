@@ -149,7 +149,8 @@ public final class RescueMatcher {
                 + policy.discountWeight() * discount + policy.urgencyWeight() * urgency;
         final ScoreParts parts = new ScoreParts(affinity, activity, discount, urgency, total);
         final int discountPercent = (int) Math.round(discount * 100);
-        return new RankedCandidate(candidate.username(), parts, pastOrders, discountPercent, minutesLeft, "");
+        return new RankedCandidate(candidate.username(), parts, pastOrders, discountPercent, minutesLeft,
+                RescueReasons.describe(pastOrders, discountPercent, minutesLeft));
     }
 
     private static double activity(final Instant lastOrderAt, final Instant now, final Duration horizon) {
