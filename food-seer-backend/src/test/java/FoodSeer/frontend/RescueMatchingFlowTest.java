@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -27,9 +28,12 @@ import FoodSeer.entity.Food;
 import FoodSeer.entity.Order;
 import FoodSeer.entity.User;
 import FoodSeer.repositories.FoodRepository;
+import FoodSeer.repositories.NotificationRepository;
 import FoodSeer.repositories.OrderRepository;
+import FoodSeer.repositories.SurplusOfferRepository;
 import FoodSeer.repositories.SurplusReservationRepository;
 import FoodSeer.repositories.UserRepository;
+import FoodSeer.rescue.RescueAlert;
 import FoodSeer.rescue.RescueAlertRepository;
 import FoodSeer.security.JwtTokenProvider;
 import FoodSeer.service.SurplusService;
@@ -50,14 +54,43 @@ class RescueMatchingFlowTest {
     @Autowired private SurplusReservationRepository reservations;
     @Autowired private RescueAlertRepository alerts;
     @Autowired private JwtTokenProvider tokens;
+    @Autowired private SurplusOfferRepository offers;
+    @Autowired private NotificationRepository notifications;
     private ChromeDriver driver;
     private WebDriverWait wait;
+    private final List<User> createdUsers = new ArrayList<>();
+    private Food stew;
+    private Order past;
+    private Long offerId;
 
+    /**
+     * Browser tests share one Spring context and one database. Other browser
+     * tests delete all users or foods in their setup, which fails if an order
+     * from this test still references them, so remove everything created here.
+     */
     @AfterEach
-    void closeBrowser() {
+    void cleanUp() {
         if (driver != null) {
             driver.quit();
         }
+        if (offerId != null) {
+            reservations.findAll().stream().filter(r -> offerId.equals(r.getOffer().getId()))
+                    .forEach(reservations::delete);
+            for (RescueAlert alert : alerts.findByOfferId(offerId)) {
+                if (alert.getNotificationId() != null) {
+                    notifications.deleteById(alert.getNotificationId());
+                }
+                alerts.delete(alert);
+            }
+            offers.deleteById(offerId);
+        }
+        if (past != null) {
+            orders.delete(past);
+        }
+        if (stew != null) {
+            foods.delete(stew);
+        }
+        users.deleteAll(createdUsers);
     }
 
     @Test
@@ -67,23 +100,25 @@ class RescueMatchingFlowTest {
         driver = new ChromeDriver(options);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        users.save(User.builder().username("rescue-browser-staff").email("rescue-browser-staff@example.test")
-                .password("unused").role("ROLE_STAFF").build());
+        createdUsers.add(users.save(User.builder().username("rescue-browser-staff")
+                .email("rescue-browser-staff@example.test").password("unused").role("ROLE_STAFF").build()));
         User fan = users.save(User.builder().username("rescue-browser-fan").email("rescue-browser-fan@example.test")
                 .password("unused").role("ROLE_CUSTOMER").build());
-        users.save(User.builder().username("rescue-browser-allergic")
+        createdUsers.add(fan);
+        createdUsers.add(users.save(User.builder().username("rescue-browser-allergic")
                 .email("rescue-browser-allergic@example.test").password("unused").role("ROLE_CUSTOMER")
-                .dietaryRestrictions("dairy").build());
-        Food stew = foods.save(new Food("Browser rescue stew", 20, 14, List.of("MILK")));
-        Order past = new Order(null, "past stew");
+                .dietaryRestrictions("dairy").build()));
+        stew = foods.save(new Food("Browser rescue stew", 20, 14, List.of("MILK")));
+        past = new Order(null, "past stew");
         past.setUser(fan);
         past.addFood(stew);
         past.setCreatedAt(LocalDateTime.now().minusDays(1));
-        orders.save(past);
+        past = orders.save(past);
         Instant now = Instant.now();
         SurplusOfferDto offer = surplus.publish(new SurplusOfferRequest(stew.getId(), "Beef, milk, carrots",
                 new BigDecimal("7.00"), 3, "Browser test counter", now.minusSeconds(60), now.plusSeconds(7200),
                 now.plusSeconds(3600)));
+        offerId = offer.id();
 
         signIn("rescue-browser-staff", "ROLE_STAFF", "/rescue/manage");
         wait.until(browser -> browser.findElements(By.xpath(
