@@ -86,6 +86,43 @@ simulator and the thresholds did not change.
 The alert budget K applies to the equal-budget baselines too, so lowering it
 shrinks their budget by the same amount. Run 2's policy is the one scored.
 
-## Results
+## Results (scored seeds 1 to 20, run November 17, 2026)
 
-Not run yet.
+**PASS.** Numbers copied from `target/m0-eval/m0-rescue-report.md`.
+
+| Check | Value | Target | Met |
+| --- | --: | --: | :-: |
+| Sell-through vs best equal-budget baseline (most recent K) | +104.7% (0.809 vs 0.395) | ≥ +20% | yes |
+| Alerts per sale (median) | 2.47 | ≤ 3.0 | yes |
+| Unsafe alerts, all seeds | 0 | 0 | yes |
+| Cliff's δ vs most recent K | 1.000 (large) | ≥ 0.33 | yes |
+
+Medians over the 20 scored seeds:
+
+| Approach | Sell-through | Alerts per sale | Unsafe alerts (total, 20 seeds) |
+| --- | --: | --: | --: |
+| Rescue matching | 0.809 | 2.47 | 0 |
+| Notify everyone | 0.977 | 68.13 | 63,770 |
+| Random K (hard filters) | 0.376 | 5.32 | 0 |
+| Most recent K (hard filters) | 0.395 | 5.06 | 0 |
+
+The per-seed table is in the generated report.
+
+### Reading the result honestly
+
+- **Notify everyone sells more surplus** (0.977 vs 0.809). It does so with about
+  28 times as many alerts per sale and 63,770 alerts to customers who are truly
+  allergic to the dish. That trade is the reason this feature exists, and it is
+  why the claim compares against equal-budget baselines.
+- **Zero unsafe alerts is partly by construction.** The allergen filter and the
+  "withhold when unsure" rule exclude anyone whose saved text conflicts with,
+  or cannot be mapped against, a declared allergen. The eval checks that against
+  true allergies, including free text such as "tahini" and "egg whites" that
+  `AllergenMatcher` does not understand. It cannot catch allergens a dish fails
+  to declare; that is the trace-back feature's job.
+- **Cliff's δ of 1.000 means the matcher won every seed pairing.** The main threat
+  to validity is the simulator itself: order history is sampled from the same
+  hidden taste that drives purchases, so a history-based ranker is favored by
+  design. The baselines use the same hard filters, so the gap is ranking, not
+  safety. Real order and reservation data would be the stronger test.
+- The policy was tuned once, on development seeds only (see above).
