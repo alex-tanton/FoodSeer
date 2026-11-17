@@ -93,7 +93,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
         return new NotificationDto(notification.getId(), notification.getIncidentId(), notification.getOrderId(),
                 notification.getMessage(), notification.getCreatedAt(), notification.isAcknowledged(),
-                notification.getAcknowledgedAt(), remedy);
+                notification.getAcknowledgedAt(), remedy, notification.getKind());
     }
 
     private void requireUsername(final String username) {
