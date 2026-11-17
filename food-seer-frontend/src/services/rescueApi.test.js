@@ -2,6 +2,7 @@ import {
   getRescueDeals,
   previewRescueMatches,
   sendRescueAlerts,
+  getRescueStats,
   earliestPickup,
 } from './rescueApi';
 
@@ -21,6 +22,7 @@ describe('rescue API', () => {
     [() => getRescueDeals(), '/deals', 'GET'],
     [() => previewRescueMatches(4), '/offers/4/matches', 'GET'],
     [() => sendRescueAlerts(4), '/offers/4/notify', 'POST'],
+    [() => getRescueStats(), '/stats', 'GET'],
   ])('sends authenticated rescue request %#', async (call, path, method) => {
     await expect(call()).resolves.toEqual([]);
     expect(fetch).toHaveBeenCalledWith(`http://localhost:8080/api/rescue${path}`, {

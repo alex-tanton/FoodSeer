@@ -22,6 +22,7 @@ const rescueRequest = async (path, method = 'GET') => {
 export const getRescueDeals = () => rescueRequest('/deals');
 export const previewRescueMatches = (offerId) => rescueRequest(`/offers/${offerId}/matches`);
 export const sendRescueAlerts = (offerId) => rescueRequest(`/offers/${offerId}/notify`, 'POST');
+export const getRescueStats = () => rescueRequest('/stats');
 
 // Earliest pickup the marketplace accepts: in the future, inside the pickup
 // window. Returns null when the window has already closed.
