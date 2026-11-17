@@ -173,6 +173,12 @@ booking deadlines, and pickup windows. Customers reserve portions, choose pickup
 times, and pay at pickup. Open **Surplus Marketplace** in the navigation after
 logging in as a customer, staff member, or admin.
 
+**Implemented extension: [Surplus rescue matching](docs/p3/rescue.md).**
+When surplus is listed, FoodSeer alerts only the customers it is safe for
+(saved allergies, budget, calories left today, a daily alert cap), ranks them
+with an explainable score, and shows staff how much surplus was rescued.
+Run `scripts/rescue-demo.sh` for a no-setup demo. Eval: [M0 claim and results](docs/p3/M0_RESCUE.md).
+
 1. **Four Major Milestones**: High-impact feature expansions to be planned and delivered.
 2. **Regression Guarantees**: All inherited Project 2 unit tests and M0 trace-back evals continue passing.
 3. **Delta Clarity**: Distinct, clean architecture isolating new Project 3 additions while respecting the inherited foundation.
