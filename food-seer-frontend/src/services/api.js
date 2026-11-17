@@ -1,5 +1,30 @@
 const API_BASE_URL = 'http://localhost:8080';
 
+// Surplus prices and reservation totals are calculated by the server.
+const surplusRequest = async (path, method = 'GET', body) => {
+  const response = await fetch(`${API_BASE_URL}/api/surplus${path}`, {
+    method,
+    headers: createHeaders(),
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+  if (!response.ok) {
+    const details = await response.json().catch(() => ({}));
+    throw new Error(details.message || 'The surplus marketplace request failed. Please try again.');
+  }
+  return response.json();
+};
+
+export const getSurplusOffers = (manage = false) =>
+  surplusRequest(manage ? '/offers/manage' : '/offers');
+export const publishSurplusOffer = (offer) => surplusRequest('/offers', 'POST', offer);
+export const reserveSurplusOffer = (id, reservation) =>
+  surplusRequest(`/offers/${id}/reservations`, 'POST', reservation);
+export const getSurplusReservations = () => surplusRequest('/reservations');
+export const cancelSurplusReservation = (id) =>
+  surplusRequest(`/reservations/${id}/cancel`, 'POST');
+export const collectSurplusReservation = (id) =>
+  surplusRequest(`/reservations/${id}/collect`, 'POST');
+
 // Helper function to get token from localStorage
 const getAuthToken = () => {
   return localStorage.getItem('token');

@@ -1,0 +1,82 @@
+.surplus-marketplace {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #25332b;
+}
+
+.surplus-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.surplus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 310px), 1fr));
+  gap: 20px;
+}
+
+.surplus-panel {
+  padding: 24px;
+  margin: 16px 0;
+  border: 1px solid #cbd9cf;
+  border-radius: 12px;
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+
+.surplus-form {
+  display: grid;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.surplus-form label {
+  font-weight: 600;
+}
+
+.surplus-form input,
+.surplus-form select,
+.surplus-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #87998e;
+  border-radius: 6px;
+  font: inherit;
+  min-width: 0;
+}
+
+.surplus-marketplace button {
+  padding: 10px 16px;
+  background: #21613c;
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.surplus-marketplace button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.surplus-error,
+.surplus-success {
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.surplus-error {
+  background: #fff0ee;
+  color: #8c241b;
+}
+
+.surplus-success {
+  background: #e9f5ec;
+  color: #205c35;
+}

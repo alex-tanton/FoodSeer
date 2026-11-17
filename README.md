@@ -167,6 +167,12 @@ npm run dead-code
 
 This repository serves as the baseline for **Project 3: Maintain & Extend**. The upcoming work will build directly upon this foundation:
 
+**Implemented extension: [Surplus food marketplace](docs/surplus-marketplace.md).**
+Staff/admins publish discounted prepared portions with ingredients, allergens,
+booking deadlines, and pickup windows. Customers reserve portions, choose pickup
+times, and pay at pickup. Open **Surplus Marketplace** in the navigation after
+logging in as a customer, staff member, or admin.
+
 1. **Four Major Milestones**: High-impact feature expansions to be planned and delivered.
 2. **Regression Guarantees**: All inherited Project 2 unit tests and M0 trace-back evals continue passing.
 3. **Delta Clarity**: Distinct, clean architecture isolating new Project 3 additions while respecting the inherited foundation.
