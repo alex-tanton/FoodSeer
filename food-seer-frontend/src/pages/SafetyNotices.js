@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMyNotifications, acknowledgeNotification } from '../services/api';
 import { formatDateTime } from '../components/allergyOptions';
+import RescueNoticeCard from './rescue/RescueNoticeCard';
 
 // Customer page: private food safety notices about orders that may have been
 // exposed to an allergen on the customer's saved list.
@@ -37,6 +38,10 @@ const SafetyNotices = () => {
     }
   };
 
+  // Rescue deals share this channel but get their own card (see pages/rescue).
+  const rescueNotices = notices.filter((notice) => notice.kind === 'RESCUE');
+  const safetyNotices = notices.filter((notice) => notice.kind !== 'RESCUE');
+
   if (loading) {
     return (
       <div className="orders-container">
@@ -64,7 +69,15 @@ const SafetyNotices = () => {
         </div>
       ) : (
         <div className="orders-list">
-          {notices.map((notice) => (
+          {rescueNotices.map((notice) => (
+            <RescueNoticeCard
+              key={notice.id}
+              notice={notice}
+              onAcknowledge={handleAcknowledge}
+              onOpen={() => navigate('/rescue')}
+            />
+          ))}
+          {safetyNotices.map((notice) => (
             <div
               key={notice.id}
               className={`trace-card ${notice.acknowledged ? '' : 'trace-unread'}`}
