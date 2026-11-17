@@ -25,9 +25,18 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** The incident that caused this notice. */
-    @Column(nullable = false)
+    /** Kind of an allergy safety notice. */
+    public static final String KIND_SAFETY = "SAFETY";
+
+    /** Kind of a surplus rescue deal alert. */
+    public static final String KIND_RESCUE = "RESCUE";
+
+    /** The incident that caused this notice; null for rescue alerts. */
     private Long incidentId;
+
+    /** SAFETY or RESCUE. Null on rows saved before kinds existed, read as SAFETY. */
+    @Column(length = 20)
+    private String kind;
 
     /** The recipient's order that may have been exposed. */
     private Long orderId;
@@ -120,5 +129,16 @@ public class Notification {
 
     public void setAcknowledgedAt(final LocalDateTime acknowledgedAt) {
         this.acknowledgedAt = acknowledgedAt;
+    }
+
+    /**
+     * @return SAFETY or RESCUE; rows saved before kinds existed are SAFETY
+     */
+    public String getKind() {
+        return kind == null ? KIND_SAFETY : kind;
+    }
+
+    public void setKind(final String kind) {
+        this.kind = kind;
     }
 }
