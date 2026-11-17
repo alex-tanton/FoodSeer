@@ -73,6 +73,19 @@ first scored run.
 report to `target/m0-eval/m0-rescue-report.md`. CI runs it in its own workflow and
 fails when the claim fails, the same way the inherited trace-back eval does.
 
+## Development runs (seeds 101 to 110, not scored)
+
+Recorded before the first scored run. Only the matcher policy was tuned; the
+simulator and the thresholds did not change.
+
+| Run | Policy change | Sell-through vs best baseline | Alerts per sale | Unsafe | Cliff's δ | Dev result |
+| --- | --- | --: | --: | --: | --: | --- |
+| 1 | 3 alerts per remaining portion | +88.8% | 3.03 | 0 | 1.000 | Miss (alerts per sale) |
+| 2 | 2 alerts per remaining portion | +99.6% | 2.51 | 0 | 1.000 | Pass |
+
+The alert budget K applies to the equal-budget baselines too, so lowering it
+shrinks their budget by the same amount. Run 2's policy is the one scored.
+
 ## Results
 
 Not run yet.
