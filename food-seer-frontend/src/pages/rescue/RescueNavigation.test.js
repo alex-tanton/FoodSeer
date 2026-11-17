@@ -55,5 +55,13 @@ describe('Navigation with rescue deals', () => {
     expect(await screen.findByText('STAFF')).toBeInTheDocument();
     expect(getMyNotifications).not.toHaveBeenCalled();
     expect(screen.queryByText(/Rescue Deals/)).not.toBeInTheDocument();
+    expect(screen.getByText('♻️ Rescue Matching')).toBeInTheDocument();
+  });
+
+  test('customers do not see the staff rescue page', async () => {
+    getMyNotifications.mockResolvedValue([]);
+    renderNav();
+    expect(await screen.findByText('♻️ Rescue Deals')).toBeInTheDocument();
+    expect(screen.queryByText('♻️ Rescue Matching')).not.toBeInTheDocument();
   });
 });

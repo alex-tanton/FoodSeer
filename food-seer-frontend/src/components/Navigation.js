@@ -86,6 +86,17 @@ const Navigation = () => {
                 Surplus Marketplace
               </button>
             )}
+            {isStaff && (
+              <button
+                className={`nav-link ${location.pathname === '/rescue/manage' ? 'active' : ''}`}
+                onClick={() => {
+                  navigate('/rescue/manage');
+                  setMenuOpen(false);
+                }}
+              >
+                ♻️ Rescue Matching
+              </button>
+            )}
             {/* Customer-only menu items */}
             {isStandardUser && (
               <>
