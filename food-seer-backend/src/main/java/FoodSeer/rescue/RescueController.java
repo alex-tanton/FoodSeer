@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <li>GET /api/rescue/offers/{id}/matches: staff preview of who would be alerted and why.</li>
  * <li>POST /api/rescue/offers/{id}/notify: alert the top-ranked customers.</li>
  * <li>GET /api/rescue/deals: the signed-in customer's open rescue deals.</li>
+ * <li>GET /api/rescue/stats and /api/rescue/offers/{id}/stats: rescue results for staff.</li>
  * </ul>
  */
 @CrossOrigin("*")
@@ -26,9 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class RescueController {
 
     private final RescueService service;
+    private final RescueStatsService stats;
 
-    public RescueController(final RescueService service) {
+    public RescueController(final RescueService service, final RescueStatsService stats) {
         this.service = service;
+        this.stats = stats;
+    }
+
+    @GetMapping("/stats")
+    @PreAuthorize("hasAnyRole('STAFF', 'ADMIN')")
+    public List<RescueDtos.Stats> allStats() {
+        return stats.all();
+    }
+
+    @GetMapping("/offers/{id}/stats")
+    @PreAuthorize("hasAnyRole('STAFF', 'ADMIN')")
+    public RescueDtos.Stats offerStats(@PathVariable("id") final Long id) {
+        return stats.forOffer(id);
     }
 
     @GetMapping("/offers/{id}/matches")

@@ -38,6 +38,29 @@ class RescueControllerTest {
     @Autowired private MockMvc mvc;
     @MockBean private UserRepository users;
     @MockBean private RescueService service;
+    @MockBean private RescueStatsService stats;
+
+    @Test
+    @WithMockUser(roles = "STAFF")
+    void staffCanReadRescueStats() throws Exception {
+        when(stats.all()).thenReturn(List.of(new RescueDtos.Stats(1L, "PASTA", null, 2, 4, 2, 3, 1,
+                new java.math.BigDecimal("18.00"), new java.math.BigDecimal("18.00"))));
+        mvc.perform(get("/api/rescue/stats")).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].alertedWhoReserved").value(2))
+                .andExpect(jsonPath("$[0].revenueRecovered").value(18.00));
+        mvc.perform(get("/api/rescue/offers/1/stats")).andExpect(status().isOk());
+        verify(stats).forOffer(1L);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"CUSTOMER", "DRIVER"})
+    void onlyStaffAndAdminSeeStats(final String role) throws Exception {
+        mvc.perform(get("/api/rescue/stats").with(
+                org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user("u")
+                        .roles(role)))
+                .andExpect(status().isForbidden());
+        verifyNoInteractions(stats);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"/api/rescue/offers/1/matches", "/api/rescue/deals"})
