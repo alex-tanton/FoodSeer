@@ -1,0 +1,51 @@
+name: M0 Rescue Eval
+
+# Runs the M0 eval for surplus rescue matching and posts its report to the job
+# summary. The job fails whenever the pre-registered claim fails (see
+# docs/p3/M0_RESCUE.md). The inherited trace-back eval keeps its own workflow.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  m0-rescue-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Run the M0 rescue eval
+        working-directory: food-seer-backend
+        run: mvn -B -Daether.connector.http.retryHandler.count=5 -Daether.connector.http.retryHandler.serviceUnavailable=429,502,503,504 -Dtest=M0RescueEval -Dsurefire.failIfNoSpecifiedTests=false test
+
+      - name: Publish the report to the job summary
+        if: always()
+        working-directory: food-seer-backend
+        run: |
+          if [ -f target/m0-eval/m0-rescue-report.md ]; then
+            cat target/m0-eval/m0-rescue-report.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No M0 rescue report was produced." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m0-rescue-eval-report
+          path: food-seer-backend/target/m0-eval/m0-rescue-report.md
