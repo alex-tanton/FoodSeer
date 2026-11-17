@@ -97,9 +97,9 @@ class RescueServiceTest {
 
         RescueDtos.Preview preview = service.preview(5L);
 
-        assertEquals(3, preview.alertBudget());
+        assertEquals(2, preview.alertBudget());
         assertEquals(List.of("a", "b", "c", "d"), preview.ranked().stream().map(RescueDtos.Match::username).toList());
-        assertEquals(List.of(true, true, true, false),
+        assertEquals(List.of(true, true, false, false),
                 preview.ranked().stream().map(RescueDtos.Match::willAlert).toList());
         assertEquals(Exclusion.ALLERGEN, preview.excluded().get(0).reason());
         assertEquals(Exclusion.ALLERGEN.description(), preview.excluded().get(0).description());
@@ -142,8 +142,8 @@ class RescueServiceTest {
     void notifyStopsAtTheAlertBudget() {
         candidates(fan("a", 3), fan("b", 2), fan("c", 1), fan("d", 0), fan("e", 0));
         RescueDtos.NotifyResult result = service.notify(5L);
-        assertEquals(List.of("a", "b", "c"), result.alerted());
-        verify(notifications, times(3)).save(any());
+        assertEquals(List.of("a", "b"), result.alerted());
+        verify(notifications, times(2)).save(any());
     }
 
     @Test

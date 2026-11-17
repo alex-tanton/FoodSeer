@@ -105,15 +105,15 @@ class RescueMatcherRankingTest {
         RescueListing onePortion = listing(List.of(), 400, "12.00", "6.00", 1, NOW.plusSeconds(3600));
         MatchResult result = run(onePortion, withHistory("a", 3, null), withHistory("b", 2, null),
                 withHistory("c", 1, null), withHistory("d", 0, null));
-        assertEquals(3, result.alertBudget());
-        assertEquals(List.of("a", "b", "c"),
+        assertEquals(2, result.alertBudget());
+        assertEquals(List.of("a", "b"),
                 result.toAlert().stream().map(RankedCandidate::username).toList());
     }
 
     @Test
     void toAlertReturnsEveryoneWhenFewerThanTheBudget() {
         MatchResult result = run(listing(List.of()), customer("a"), customer("b"));
-        assertEquals(15, result.alertBudget());
+        assertEquals(10, result.alertBudget());
         assertEquals(2, result.toAlert().size());
     }
 

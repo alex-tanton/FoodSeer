@@ -26,7 +26,7 @@ public record RescuePolicy(int maxAlertsPerListing, int alertsPerPortion, int da
      * The policy the application uses. Any tuning of these numbers happens on the
      * eval's dev seeds (101 to 110) only, never on the scored seeds.
      */
-    public static final RescuePolicy DEFAULT = new RescuePolicy(20, 3, 2, Duration.ofMinutes(10), 3,
+    public static final RescuePolicy DEFAULT = new RescuePolicy(20, 2, 2, Duration.ofMinutes(10), 3,
             Duration.ofDays(14), Duration.ofMinutes(180), 0.5, 0.3, 0.1, 0.1);
 
     public RescuePolicy {

@@ -18,7 +18,7 @@ class RescuePolicyTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"0,0", "-3,0", "1,3", "5,15", "7,20", "1000,20"})
+    @CsvSource({"0,0", "-3,0", "1,2", "5,10", "7,14", "10,20", "1000,20"})
     void alertBudgetScalesWithPortionsUpToTheMaximum(final int portions, final int budget) {
         assertEquals(budget, RescuePolicy.DEFAULT.alertBudget(portions));
     }
