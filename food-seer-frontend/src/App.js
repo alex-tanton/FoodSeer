@@ -22,6 +22,8 @@ import DriverDashboard from './pages/DriverDashboard';
 import AllergyIncidents from './pages/AllergyIncidents';
 import SafetyNotices from './pages/SafetyNotices';
 import SurplusMarketplace from './pages/SurplusMarketplace';
+import RescueDeals from './pages/rescue/RescueDeals';
+import RescueManage from './pages/rescue/RescueManage';
 import { isAuthenticated } from './services/api';
 
 // Protected Route component
@@ -234,6 +236,28 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <SurplusMarketplace />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/rescue"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <RescueDeals />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/rescue/manage"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <RescueManage />
                 </AppLayout>
               </ProtectedRoute>
             }

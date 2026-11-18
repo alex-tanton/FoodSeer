@@ -1,0 +1,56 @@
+.rescue-reason {
+  display: inline-block;
+  padding: 6px 10px;
+  margin: 4px 0 8px;
+  border-radius: 999px;
+  background: #e7f4ea;
+  color: #1f5132;
+  font-weight: 600;
+}
+
+.rescue-status {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #eef6ff;
+  color: #1d3b5c;
+}
+
+.rescue-error {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #fdecea;
+  color: #8a1c13;
+}
+
+.rescue-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rescue-table th,
+.rescue-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e3ebe5;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rescue-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.rescue-numbers div {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f4f8f5;
+}
+
+.rescue-numbers strong {
+  display: block;
+  font-size: 1.4rem;
+}

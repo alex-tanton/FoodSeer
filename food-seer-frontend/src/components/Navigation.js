@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { logout, getCurrentUser, getMyUnreadNotificationCount } from '../services/api';
+import { logout, getCurrentUser, getMyNotifications } from '../services/api';
 
 const Navigation = () => {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [unreadNotices, setUnreadNotices] = useState(0);
+  const [unreadDeals, setUnreadDeals] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,11 +33,14 @@ const Navigation = () => {
     const fetchUnreadNotices = async () => {
       if (user?.role !== 'ROLE_CUSTOMER') {
         setUnreadNotices(0);
+        setUnreadDeals(0);
         return;
       }
       try {
-        const count = await getMyUnreadNotificationCount();
-        setUnreadNotices(count);
+        // Rescue deals share the notice channel; only safety notices raise the safety banner.
+        const unread = (await getMyNotifications()).filter((notice) => !notice.acknowledged);
+        setUnreadNotices(unread.filter((notice) => notice.kind !== 'RESCUE').length);
+        setUnreadDeals(unread.filter((notice) => notice.kind === 'RESCUE').length);
       } catch (error) {
         console.error('Error fetching safety notices:', error);
       }
@@ -80,6 +84,17 @@ const Navigation = () => {
                 }}
               >
                 Surplus Marketplace
+              </button>
+            )}
+            {isStaff && (
+              <button
+                className={`nav-link ${location.pathname === '/rescue/manage' ? 'active' : ''}`}
+                onClick={() => {
+                  navigate('/rescue/manage');
+                  setMenuOpen(false);
+                }}
+              >
+                ♻️ Rescue Matching
               </button>
             )}
             {/* Customer-only menu items */}
@@ -153,6 +168,16 @@ const Navigation = () => {
                   }}
                 >
                   🔔 Safety Notices{unreadNotices > 0 ? ` (${unreadNotices})` : ''}
+                </button>
+
+                <button
+                  className={`nav-link ${location.pathname === '/rescue' ? 'active' : ''}`}
+                  onClick={() => {
+                    navigate('/rescue');
+                    setMenuOpen(false);
+                  }}
+                >
+                  ♻️ Rescue Deals{unreadDeals > 0 ? ` (${unreadDeals})` : ''}
                 </button>
 
                 <button
