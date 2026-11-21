@@ -15,6 +15,7 @@ import Quiz from './pages/Quiz';
 import PersonalDiet from './pages/PersonalDiet';
 // the new per-day calorie-consumption history page, linked from Personal Diet's "History" button
 import CalorieHistory from './pages/CalorieHistory';
+import MealPlan from './pages/mealplan/MealPlan';
 import AdminRoute from './components/AdminRoute';
 import Dashboard from './pages/Dashboard';
 import Navigation from './components/Navigation';
@@ -95,6 +96,17 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <PersonalDiet />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          {/* Weekly meal plan built on Personal Diet's calorie target */}
+          <Route
+            path="/meal-plan"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <MealPlan />
                 </AppLayout>
               </ProtectedRoute>
             }

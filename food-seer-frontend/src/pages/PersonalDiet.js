@@ -291,6 +291,10 @@ const PersonalDiet = () => {
       <div className="recommendations-header">
         <h1 className="recommendations-title">Personal Diet</h1>
         <div className="header-actions">
+          {/* plans the week ahead from the same calorie target */}
+          <button className="nav-button" onClick={() => navigate('/meal-plan')}>
+            Plan My Week
+          </button>
           {/* takes the customer to the per-day calorie consumption history page */}
           <button
             className="nav-button"
