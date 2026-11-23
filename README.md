@@ -24,6 +24,19 @@ Food Seer is an AI-assisted smart meal recommendation and restaurant ordering sy
 
 ---
 
+## 🚀 Project 3: Extensions & New Milestones
+
+In Project 3, FoodSeer is extended with four major, impressive milestones built cleanly on the inherited codebase:
+
+| Milestone | Capability | Documentation | Eval / Demo |
+| :--- | :--- | :--- | :--- |
+| **Surplus Food Marketplace** | Staff publish discounted excess portions; customers reserve pickup windows with immutable snapshots and concurrency locks. | [docs/surplus-marketplace.md](docs/surplus-marketplace.md) | In-app (`/surplus`) |
+| **Surplus Rescue Matching** | Intelligently targets surplus notifications using order history, calorie budgets, and strict allergen safety filtering. | [docs/p3/rescue.md](docs/p3/rescue.md) | `mvn -Dtest=M0RescueEval test`<br>`scripts/rescue-demo.sh` |
+| **Group Dining Harmonizer** | Collaborative group ordering sessions with automated multi-profile consensus, table cross-contamination auditing, and itemized split billing. | [docs/p3/group-dining.md](docs/p3/group-dining.md) | `mvn -Dtest=M0GroupDiningEval test`<br>`scripts/group-demo.sh` |
+| **Smart Weekly Meal Planner** | Multi-day AI meal planner scheduling meals against pantry stock, fitness calorie targets, and dietary rules with heuristic fallback. | [docs/p3/meal-planner.md](docs/p3/meal-planner.md) | `mvn -Dtest=M0MealPlannerEval test` |
+
+---
+
 ## 💡 About Food Seer
 
 Food Seer simplifies food decisions through guided personalization, eliminating menu decision fatigue:

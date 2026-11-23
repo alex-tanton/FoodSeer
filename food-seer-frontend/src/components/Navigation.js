@@ -111,6 +111,16 @@ const Navigation = () => {
                 </button>
 
                 <button
+                  className={`nav-link ${location.pathname.startsWith('/group-dining') ? 'active' : ''}`}
+                  onClick={() => {
+                    navigate('/group-dining');
+                    setMenuOpen(false);
+                  }}
+                >
+                  👥 Group Dining
+                </button>
+
+                <button
                   className={`nav-link ${location.pathname === '/chatbot' ? 'active' : ''}`}
                   onClick={() => {
                     navigate('/chatbot');

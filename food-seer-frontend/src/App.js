@@ -25,6 +25,8 @@ import SafetyNotices from './pages/SafetyNotices';
 import SurplusMarketplace from './pages/SurplusMarketplace';
 import RescueDeals from './pages/rescue/RescueDeals';
 import RescueManage from './pages/rescue/RescueManage';
+import GroupDiningHub from './pages/group/GroupDiningHub';
+import GroupRoom from './pages/group/GroupRoom';
 import { isAuthenticated } from './services/api';
 
 // Protected Route component
@@ -270,6 +272,28 @@ function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <RescueManage />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/group-dining"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <GroupDiningHub />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/group-dining/:sessionCode"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <GroupRoom />
                 </AppLayout>
               </ProtectedRoute>
             }
