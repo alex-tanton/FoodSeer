@@ -18,7 +18,6 @@ const DriverDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allergyStatus, setAllergyStatus] = useState({});
-  const [viewMode, setViewMode] = useState('batches');
 
   const loadDashboard = useCallback(async () => {
     try {
@@ -133,45 +132,11 @@ const DriverDashboard = () => {
         </div>
       </div>
 
-      <div className="driver-view-mode-tabs" style={{ display: 'flex', gap: '12px', marginTop: '20px', marginBottom: '10px' }}>
-        <button
-          type="button"
-          className={`view-mode-btn ${viewMode === 'batches' ? 'active' : ''}`}
-          onClick={() => setViewMode('batches')}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            background: viewMode === 'batches' ? '#1971c2' : '#e9ecef',
-            color: viewMode === 'batches' ? 'white' : '#495057',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          ⚡ Batched Routes (Optimized)
-        </button>
-        <button
-          type="button"
-          className={`view-mode-btn ${viewMode === 'individual' ? 'active' : ''}`}
-          onClick={() => setViewMode('individual')}
-          style={{
-            padding: '10px 20px',
-            borderRadius: '8px',
-            border: 'none',
-            background: viewMode === 'individual' ? '#1971c2' : '#e9ecef',
-            color: viewMode === 'individual' ? 'white' : '#495057',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          📦 Individual Orders
-        </button>
-      </div>
+      {/* ---------------- Batch Dispatcher (Optimized Routes) ---------------- */}
+      <DriverBatchPanel onEarningsUpdated={loadDashboard} />
 
-      {viewMode === 'batches' ? (
-        <DriverBatchPanel onEarningsUpdated={loadDashboard} />
-      ) : (
-        <div className="order-wrapper">
+      {/* ---------------- Individual Orders ---------------- */}
+      <div className="order-wrapper">
         {/* ---------------- Active Orders ---------------- */}
         <section className="orders-section active">
           <div className="orders-container">
@@ -285,7 +250,6 @@ const DriverDashboard = () => {
           </div>
         </section>
       </div>
-      )}
     </div>
   );
 };
