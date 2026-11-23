@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   fetchDriverDashboard,
   getCurrentUser,
@@ -9,6 +9,7 @@ import {
   acknowledgeAllergyHandoff,
   getAllergyHandoffStatus,
 } from '../services/api';
+import DriverBatchPanel from './driver/DriverBatchPanel';
 
 const DriverDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -18,47 +19,47 @@ const DriverDashboard = () => {
   const [error, setError] = useState(null);
   const [allergyStatus, setAllergyStatus] = useState({});
 
-  useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const user = await getCurrentUser();
+  const loadDashboard = useCallback(async () => {
+    try {
+      const user = await getCurrentUser();
 
-        const [dashboardStats, available, active] = await Promise.all([
-          fetchDriverDashboard(user.username),
-          getAvailableOrders(user.username),
-          getActiveOrders(user.username),
-        ]);
+      const [dashboardStats, available, active] = await Promise.all([
+        fetchDriverDashboard(user.username),
+        getAvailableOrders(user.username),
+        getActiveOrders(user.username),
+      ]);
 
-        setStats(dashboardStats);
-        setAvailableOrders(available);
-        setActiveOrders(active);
+      setStats(dashboardStats);
+      setAvailableOrders(available);
+      setActiveOrders(active);
 
-        // Load allergy acknowledgment statuses for assigned orders.
-        const statusEntries = await Promise.all(
-          active
-            .filter((order) => order.allergyRestrictions?.trim())
-            .map(async (order) => {
-              try {
-                const status = await getAllergyHandoffStatus(order.id);
-                return [order.id, status];
-              } catch (err) {
-                console.error(`Failed to load allergy status for order ${order.id}:`, err);
-                return [order.id, null];
-              }
-            })
-        );
+      // Load allergy acknowledgment statuses for assigned orders.
+      const statusEntries = await Promise.all(
+        active
+          .filter((order) => order.allergyRestrictions?.trim())
+          .map(async (order) => {
+            try {
+              const status = await getAllergyHandoffStatus(order.id);
+              return [order.id, status];
+            } catch (err) {
+              console.error(`Failed to load allergy status for order ${order.id}:`, err);
+              return [order.id, null];
+            }
+          })
+      );
 
-        setAllergyStatus(Object.fromEntries(statusEntries));
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load dashboard data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDashboard();
+      setAllergyStatus(Object.fromEntries(statusEntries));
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
 
   const handleClaim = async (orderId) => {
     try {
@@ -131,6 +132,10 @@ const DriverDashboard = () => {
         </div>
       </div>
 
+      {/* ---------------- Batch Dispatcher (Optimized Routes) ---------------- */}
+      <DriverBatchPanel onEarningsUpdated={loadDashboard} />
+
+      {/* ---------------- Individual Orders ---------------- */}
       <div className="order-wrapper">
         {/* ---------------- Active Orders ---------------- */}
         <section className="orders-section active">
