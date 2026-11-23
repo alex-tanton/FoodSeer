@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   fetchDriverDashboard,
   getCurrentUser,
@@ -9,6 +9,7 @@ import {
   acknowledgeAllergyHandoff,
   getAllergyHandoffStatus,
 } from '../services/api';
+import DriverBatchPanel from './driver/DriverBatchPanel';
 
 const DriverDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -17,48 +18,49 @@ const DriverDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [allergyStatus, setAllergyStatus] = useState({});
+  const [viewMode, setViewMode] = useState('batches');
+
+  const loadDashboard = useCallback(async () => {
+    try {
+      const user = await getCurrentUser();
+
+      const [dashboardStats, available, active] = await Promise.all([
+        fetchDriverDashboard(user.username),
+        getAvailableOrders(user.username),
+        getActiveOrders(user.username),
+      ]);
+
+      setStats(dashboardStats);
+      setAvailableOrders(available);
+      setActiveOrders(active);
+
+      // Load allergy acknowledgment statuses for assigned orders.
+      const statusEntries = await Promise.all(
+        active
+          .filter((order) => order.allergyRestrictions?.trim())
+          .map(async (order) => {
+            try {
+              const status = await getAllergyHandoffStatus(order.id);
+              return [order.id, status];
+            } catch (err) {
+              console.error(`Failed to load allergy status for order ${order.id}:`, err);
+              return [order.id, null];
+            }
+          })
+      );
+
+      setAllergyStatus(Object.fromEntries(statusEntries));
+    } catch (err) {
+      console.error(err);
+      setError('Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const loadDashboard = async () => {
-      try {
-        const user = await getCurrentUser();
-
-        const [dashboardStats, available, active] = await Promise.all([
-          fetchDriverDashboard(user.username),
-          getAvailableOrders(user.username),
-          getActiveOrders(user.username),
-        ]);
-
-        setStats(dashboardStats);
-        setAvailableOrders(available);
-        setActiveOrders(active);
-
-        // Load allergy acknowledgment statuses for assigned orders.
-        const statusEntries = await Promise.all(
-          active
-            .filter((order) => order.allergyRestrictions?.trim())
-            .map(async (order) => {
-              try {
-                const status = await getAllergyHandoffStatus(order.id);
-                return [order.id, status];
-              } catch (err) {
-                console.error(`Failed to load allergy status for order ${order.id}:`, err);
-                return [order.id, null];
-              }
-            })
-        );
-
-        setAllergyStatus(Object.fromEntries(statusEntries));
-      } catch (err) {
-        console.error(err);
-        setError('Failed to load dashboard data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     loadDashboard();
-  }, []);
+  }, [loadDashboard]);
 
   const handleClaim = async (orderId) => {
     try {
@@ -131,7 +133,45 @@ const DriverDashboard = () => {
         </div>
       </div>
 
-      <div className="order-wrapper">
+      <div className="driver-view-mode-tabs" style={{ display: 'flex', gap: '12px', marginTop: '20px', marginBottom: '10px' }}>
+        <button
+          type="button"
+          className={`view-mode-btn ${viewMode === 'batches' ? 'active' : ''}`}
+          onClick={() => setViewMode('batches')}
+          style={{
+            padding: '10px 20px',
+            borderRadius: '8px',
+            border: 'none',
+            background: viewMode === 'batches' ? '#1971c2' : '#e9ecef',
+            color: viewMode === 'batches' ? 'white' : '#495057',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+        >
+          ⚡ Batched Routes (Optimized)
+        </button>
+        <button
+          type="button"
+          className={`view-mode-btn ${viewMode === 'individual' ? 'active' : ''}`}
+          onClick={() => setViewMode('individual')}
+          style={{
+            padding: '10px 20px',
+            borderRadius: '8px',
+            border: 'none',
+            background: viewMode === 'individual' ? '#1971c2' : '#e9ecef',
+            color: viewMode === 'individual' ? 'white' : '#495057',
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+        >
+          📦 Individual Orders
+        </button>
+      </div>
+
+      {viewMode === 'batches' ? (
+        <DriverBatchPanel onEarningsUpdated={loadDashboard} />
+      ) : (
+        <div className="order-wrapper">
         {/* ---------------- Active Orders ---------------- */}
         <section className="orders-section active">
           <div className="orders-container">
@@ -245,6 +285,7 @@ const DriverDashboard = () => {
           </div>
         </section>
       </div>
+      )}
     </div>
   );
 };
