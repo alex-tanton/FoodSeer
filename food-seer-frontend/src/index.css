@@ -717,6 +717,38 @@ code {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* .App centers its children; without this the layout grows to the nav's
+     width and is pushed off the left edge of narrower windows. */
+  width: 100%;
+  min-width: 0;
+}
+
+/* Between the phone menu and very wide screens, let the nav links wrap onto a
+   second row instead of making every page wider than the window. */
+.nav-menu {
+  min-width: 0;
+}
+
+.nav-links {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+@media (max-width: 1400px) and (min-width: 769px) {
+  .nav-menu {
+    margin-left: 20px;
+    gap: 16px;
+  }
+
+  .nav-links {
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
 }
 
 .app-content {

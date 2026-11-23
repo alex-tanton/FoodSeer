@@ -1,0 +1,58 @@
+name: M0 Meal Planner Eval
+
+# Runs the M0 eval for the weekly meal planner and the plan-request reading eval,
+# and posts both reports to the job summary. The job fails when a hard guarantee
+# breaks (an unsafe dish, a feasible plan over budget, a main over the repeat cap,
+# an unhonored safe pin) or quality drops below the regression floors. The
+# pre-registered claim's verdict is in the report and in docs/p3/M0_MEAL_PLANNER.md.
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  m0-meal-planner-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Run the M0 meal planner eval and the plan-request eval
+        working-directory: food-seer-backend
+        run: mvn -B -Daether.connector.http.retryHandler.count=5 -Daether.connector.http.retryHandler.serviceUnavailable=429,502,503,504 -Dtest='M0MealPlannerEval,PlanRequestEval' -Dsurefire.failIfNoSpecifiedTests=false test
+
+      - name: Publish the reports to the job summary
+        if: always()
+        working-directory: food-seer-backend
+        run: |
+          for report in m0-meal-planner-report.md plan-requests-report.md; do
+            if [ -f "target/m0-eval/$report" ]; then
+              cat "target/m0-eval/$report" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "No $report was produced." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+      - name: Upload the reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: m0-meal-planner-eval-reports
+          path: |
+            food-seer-backend/target/m0-eval/m0-meal-planner-report.md
+            food-seer-backend/target/m0-eval/plan-requests-report.md

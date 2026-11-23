@@ -192,6 +192,16 @@ When surplus is listed, FoodSeer alerts only the customers it is safe for
 with an explainable score, and shows staff how much surplus was rescued.
 Run `scripts/rescue-demo.sh` for a no-setup demo. Eval: [M0 claim and results](docs/p3/M0_RESCUE.md).
 
+**Implemented extension: [Weekly meal planner](docs/p3/meal-planner.md).**
+Extends Personal Diet from "what fits today" to a planned week. It plans
+breakfast, lunch and dinner from the menu so each day lands near the customer's
+calorie target (goal + calories burned). It never plans their allergens, stays
+under a weekly spending limit, limits repeats, and honors requests like "pizza on
+Friday". Customers can swap any meal, order today's meals in one click, and see
+planned vs. eaten calories. A local LLM can optionally read typed requests; its
+answer is checked against what was typed. Eval: [M0 claim and results](docs/p3/M0_MEAL_PLANNER.md)
+(scored run: FAIL, at 79.4% of days on target against an 80% bar).
+
 1. **Four Major Milestones**: High-impact feature expansions to be planned and delivered.
 2. **Regression Guarantees**: All inherited Project 2 unit tests and M0 trace-back evals continue passing.
 3. **Delta Clarity**: Distinct, clean architecture isolating new Project 3 additions while respecting the inherited foundation.
