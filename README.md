@@ -34,6 +34,7 @@ In Project 3, FoodSeer is extended with four major, impressive milestones built 
 | **Surplus Rescue Matching** | Intelligently targets surplus notifications using order history, calorie budgets, and strict allergen safety filtering. | [docs/p3/rescue.md](docs/p3/rescue.md) | `mvn -Dtest=M0RescueEval test`<br>`scripts/rescue-demo.sh` |
 | **Group Dining Harmonizer** | Collaborative group ordering sessions with automated multi-profile consensus, table cross-contamination auditing, and itemized split billing. | [docs/p3/group-dining.md](docs/p3/group-dining.md) | `mvn -Dtest=M0GroupDiningEval test`<br>`scripts/group-demo.sh` |
 | **Smart Weekly Meal Planner** | Multi-day AI meal planner scheduling meals against pantry stock, fitness calorie targets, and dietary rules with heuristic fallback. | [docs/p3/meal-planner.md](docs/p3/meal-planner.md) | `mvn -Dtest=M0MealPlannerEval test` |
+| **Driver Batch Dispatcher** | Multi-order batch suggestion, thermal freshness routing heuristics, and atomic route execution with pooled efficiency bonuses. | [docs/p3/driver-batching.md](docs/p3/driver-batching.md) | `mvn -Dtest=M0DriverBatchEval test`<br>`scripts/driver-demo.sh` |
 
 ---
 
